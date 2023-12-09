@@ -1,0 +1,109 @@
+\documentclass{amsart}
+\usepackage{mathtools,upref,siunitx,upquote,fancyvrb,xspace,color}
+\usepackage[hyphens]{url}
+\usepackage[utf8]{inputenc}
+\usepackage{esdiff}
+
+\input{FJHDef.tex}
+
+
+\usepackage{algpseudocode}
+\usepackage{algorithm, algorithmicx}
+\algnewcommand\algorithmicparam{\textbf{Parameters:}}
+\algnewcommand\PARAM{\item[\algorithmicparam]}
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\INPUT{\item[\algorithmicinput]}
+\algnewcommand\RETURN{\State \textbf{Return }}
+
+\newcommand{\hvarrho}{\widehat{\varrho}}
+\newcommand{\KY}{K^y}
+\newcommand{\tKY}{\widetilde{K}^y}
+\newcommand{\KX}{K^{\vx}}
+\newcommand{\tk}{\tilde{k}}
+
+
+
+\begin{document}
+\title{Kernel Density Estimation Using Low Discrepancy Sampling}
+\author{Fred J. Hickernell}
+\begin{abstract}This project is where all of the files and commands go that are needed elsewhere
+\end{abstract}
+
+\maketitle
+
+Let $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$.  Low discrepancy sequences are used for computing  $\mu = \Ex(Y)$.  Can they be used for estimation of $\varrho$, the probability density function of $Y$?
+
+Let $\nu$ be a probability mass or density function.  A generalized kernel density estimator (KDE) can be written as
+\[
+\hvarrho(y,\nu,k) := \int_{-\infty}^{\infty} k(y,z) \, \nu(z) \, \dif z.
+\]
+Let $\varrho_{\vy}$ be the empirical probability mass function of $\vy = (y_1, \ldots, y_n)$.  Then a \emph{practical KDE} is 
+\begin{equation*}
+\hvarrho(y,\varrho_{\vy},k) = \int_{-\infty}^{\infty} k(y,z) \, \varrho_{\vy}(z) \, \dif z = \frac 1n \sum_{i=1}^n k(y,y_i) \\
+ = \frac 1n \sum_{i=1}^n k(y,f(\vx_i)) .
+\end{equation*}
+Moreover, a \emph{smoothed density} can be defined as 
+\[
+\hvarrho(y,\varrho,k) = \int_{-\infty}^{\infty} k(y,z) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(y,f(\vx)) \,  \dif \vx  
+\]
+
+The absolute error of this estimator can be written as 
+\begin{align*}
+    \abs{\varrho(y) - \hvarrho(y,\varrho_{\vy},k)} & = 
+     \abs{\varrho(y) - \hvarrho(y,\varrho,k) + \hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)} \\
+     & \le  \abs{\varrho(y) - \hvarrho(y,\varrho,k)} + \abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)}.
+\end{align*}
+We will analyze the two terms separately.
+
+Let $\KY:\reals \times \reals \to \reals$ be a reproducing kernel for a Hilbert space containing $\varrho$.  Then an upper bound on the first term in the expression for the error can be bounded via the Cauchy-Schwarz inequality and the Riesz representation theorm:
+\begin{align*}
+\abs{\varrho(y) - \hvarrho(y,\varrho,k)} 
+& = \abs{\varrho(y) - \int_{-\infty}^{\infty} k(y,z) \, \varrho(z) \, \dif z} \\
+& = \abs{\ip[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \,  \dif z}{\varrho} } \\
+& \le  \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \, \dif z} \norm[\KY]{\varrho}, 
+\end{align*}
+where
+\begin{align*}
+\MoveEqLeft{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \, \dif z}^2} \\
+&=  \KY(y,y) - 2 \int_{-\infty}^{\infty} k(y,z) \, \KY(y,z) \, \dif z \\
+& \qquad \qquad + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  k(y,z) \, \KY(z,t) k(y,t)\, \dif z \, \dif t.
+\end{align*}
+This is an upper bound on the first term in the expression for the error that separates the part depending on the choice of the kernel from the part depending on the probability density.
+
+Let $\KX: [0,1]^d \times [0,1]^d\to \reals$ be a reproducing kernel for a Hilbert space containing $k(y,f(\cdot))$ for all $y \in \reals$ and all $f$ of interest. Then
+\begin{align*}
+\abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)} 
+& = \abs{\int_{-\infty}^{\infty} k(y,z) \, \varrho(z) \, \dif z - 
+\frac 1n \sum_{i=1}^n k(y,y_i)} \\
+& = \abs{\int_{[0,1]^d} k(y,f(\vx)) \, \dif \vx - 
+\frac 1n \sum_{i=1}^n k(y,f(\vx_i))} \\
+& = \abs{\ip[\KY]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx - 
+\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)}{k(y,f(\cdot)) }} \\
+& \le  \norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx - 
+\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)} \norm[\KX]{k(y,f(\cdot)) } ,
+\end{align*}
+where
+\begin{align*}
+\MoveEqLeft{\norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx - 
+\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)}^2} \\
+&=  \int_{[0,1]^d \times [0,1]^d} \KX(\vx,\vt) \, \dif \vx \, \dif \vt - 
+\frac 2n \sum_{i=1}^n \int_{[0,1]^d} \KX(\vx,\vx_i) \, \dif \vx \\
+& \qquad \qquad + \frac 1{n^2} \sum_{i,j=1}^n  \KX(\vx_i,\vx_j) .
+\end{align*}
+This is an upper bound on the second term in the expression for the error that separates the part depending on the choice of the kernel evaluated at $(y,f(\cdot))$ from the part depending on the sample nodes.
+
+\section{Isotropic Kernels}
+
+Suppose that $k(y,z) = h^{-1}\tk((y-z)/h)$ and $\KY(y,z) = \tKY(y-z)$.  Then
+\begin{align*}
+\MoveEqLeft{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \, \dif z}^2} \\
+&=  \tKY(0) -  \frac 2h \int_{-\infty}^{\infty} \tk((y-z)/h) \, \tKY(z-y) \, \dif z \\
+& \qquad \qquad + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  k(y,z) \, \KY(z,t) k(y,t)\, \dif z \, \dif t \\
+&=  \KY(y,y) -  \frac 2h \int_{-\infty}^{\infty} \tk((y-z)/h) \, \tKY(z-y) \, \dif z \\
+& \qquad \qquad + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  k(y,z) \, \KY(z,t) k(y,t)\, \dif z \, \dif t \\
+.
+\end{align*}
+\bibliographystyle{amsplain}
+\bibliography{FJH23,FJHown23}
+
+\end{document}
