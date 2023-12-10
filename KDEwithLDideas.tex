@@ -3,6 +3,7 @@
 \usepackage[hyphens]{url}
 \usepackage[utf8]{inputenc}
 \usepackage{esdiff}
+\usepackage[capitalise]{cleveref}
 
 \input{FJHDef.tex}
 
@@ -35,16 +36,17 @@ Let $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$.  Low discrepancy sequences are us
 
 Let $\nu$ be a probability mass or density function.  A generalized kernel density estimator (KDE) can be written as
 \[
-\hvarrho(y,\nu,k) := \int_{-\infty}^{\infty} k(y,z) \, \nu(z) \, \dif z.
+\hvarrho(y,\nu,k) := \int_{-\infty}^{\infty} k(z,y) \, \nu(z) \, \dif z.,
 \]
+where we call the $k:\reals \times \reals \to \reals$ the \emph{density kernel}.  Typically, $\nu$ should approximate $\varrho$ well and $k(\cdot,y)$ should be larger near $y$ than away from $y$. 
 Let $\varrho_{\vy}$ be the empirical probability mass function of $\vy = (y_1, \ldots, y_n)$.  Then a \emph{practical KDE} is 
 \begin{equation*}
-\hvarrho(y,\varrho_{\vy},k) = \int_{-\infty}^{\infty} k(y,z) \, \varrho_{\vy}(z) \, \dif z = \frac 1n \sum_{i=1}^n k(y,y_i) \\
- = \frac 1n \sum_{i=1}^n k(y,f(\vx_i)) .
+\hvarrho(y,\varrho_{\vy},k) = \int_{-\infty}^{\infty} k(z,y) \, \varrho_{\vy}(z) \, \dif z = \frac 1n \sum_{i=1}^n k(y_i,y) \\
+ = \frac 1n \sum_{i=1}^n k(f(\vx_i),y .
 \end{equation*}
 Moreover, a \emph{smoothed density} can be defined as 
 \[
-\hvarrho(y,\varrho,k) = \int_{-\infty}^{\infty} k(y,z) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(y,f(\vx)) \,  \dif \vx  
+\hvarrho(y,\varrho,k) = \int_{-\infty}^{\infty} k(y,z) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx  
 \]
 
 The absolute error of this estimator can be written as 
@@ -56,19 +58,23 @@ The absolute error of this estimator can be written as
 We will analyze the two terms separately.
 
 Let $\KY:\reals \times \reals \to \reals$ be a reproducing kernel for a Hilbert space containing $\varrho$.  Then an upper bound on the first term in the expression for the error can be bounded via the Cauchy-Schwarz inequality and the Riesz representation theorm:
-\begin{align*}
+\begin{align}
+\label{eq:firstbd}
 \abs{\varrho(y) - \hvarrho(y,\varrho,k)} 
 & = \abs{\varrho(y) - \int_{-\infty}^{\infty} k(y,z) \, \varrho(z) \, \dif z} \\
+\nonumber
 & = \abs{\ip[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \,  \dif z}{\varrho} } \\
+\nonumber
 & \le  \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \, \dif z} \norm[\KY]{\varrho}, 
-\end{align*}
-where
-\begin{align*}
-\MoveEqLeft{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \, \dif z}^2} \\
-&=  \KY(y,y) - 2 \int_{-\infty}^{\infty} k(y,z) \, \KY(y,z) \, \dif z \\
+\end{align}
+where the part of the error bound depending on density kernel can be rewritten in terms of integrals:
+\begin{align}
+\label{eq:kquality}
+\MoveEqLeft{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(y,z) \, \KY(z,\cdot) \, \dif z}^2} \\ \nonumber
+&=  \KY(y,y) - 2 \int_{-\infty}^{\infty} k(y,z) \, \KY(y,z) \, \dif z \\ \nonumber
 & \qquad \qquad + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  k(y,z) \, \KY(z,t) k(y,t)\, \dif z \, \dif t.
-\end{align*}
-This is an upper bound on the first term in the expression for the error that separates the part depending on the choice of the kernel from the part depending on the probability density.
+\end{align}
+\Cref{eq:firstbd} is an upper bound on the first term in the expression for the error that separates the part depending on the choice of the density kernel from the part depending on the probability density.
 
 Let $\KX: [0,1]^d \times [0,1]^d\to \reals$ be a reproducing kernel for a Hilbert space containing $k(y,f(\cdot))$ for all $y \in \reals$ and all $f$ of interest. Then
 \begin{align*}
