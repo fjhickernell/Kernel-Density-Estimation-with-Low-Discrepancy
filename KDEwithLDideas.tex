@@ -109,7 +109,7 @@ where
 This is an upper bound on the second term in the expression for the error that separates the part depending on the choice of the kernel evaluated at $(f(\cdot),y)$ from the part depending on the sample nodes.
 
 
-\section{Isotropic Density Kernels}
+\section{Stationary Density Kernels}
 
 Suppose that $k(z,y) = h^{-1}\tk((z-y)/h)$ where $h$ is a bandwidth, and $\KY(y,z) = \tKY(y-z)$.  We also assume for simplicity that $\tk$ is an even function.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written as
 \begin{align*}
@@ -124,18 +124,18 @@ via the variable transformations $w = (z-y)/h$ and $v = (t-y)/h$.
 
 Let's approximate $\tKY$ by a MacLaurin series with $r+1$ terms.  Since $\tKY$ is an even function, the odd numbered derivatives drop out.
 \begin{equation*}
-	\tKY(y)  = \sum_{\ell = 0}^{r} \frac{\tKY^{(2\ell)}(0) \, y^{2\ell}}{2\ell!} + \int_0^y \frac{\tKY^{(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!} \, \dif z.
+	\tKY(y)  = \sum_{\ell = 0}^{r} \frac{\tK^{y(2\ell)}(0) \, y^{2\ell}}{2\ell!} + \int_0^y \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!} \, \dif z.
 \end{equation*}
-Here $\tKY^{(2\ell)}$ denotes the $2\ell^{\text{th}}$ derivative of $\tKY$. 
+Here $\tK^{y(2\ell)}$ denotes the $2\ell^{\text{th}}$ derivative of $\tKY$. 
 
 It follows from this approximation 
 \begin{align} \label{eq:isomidterm}
 	\int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w & = 
-	\int_{-\infty}^{\infty} \tk(w) \, \sum_{\ell = 0}^{r} \frac{\tKY^{(2\ell)}(0) \, (hw)^{2\ell}}{2\ell!}  \, \dif w \\
+	\int_{-\infty}^{\infty} \tk(w) \, \sum_{\ell = 0}^{r} \frac{\tK^{y(2\ell)}(0) \, (hw)^{2\ell}}{2\ell!}  \, \dif w \\
 	& 
 	\nonumber
 	\qquad \qquad 
-	+ 2 \int_{0}^{\infty} \tk(w) \,  \int_0^{hw} \frac{\tKY^{(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!} \, \dif z  \, \dif w
+	+ 2 \int_{0}^{\infty} \tk(w) \,  \int_0^{hw} \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!} \, \dif z  \, \dif w
 \end{align}
 If $\tk$ has the property that 
 \begin{equation} \label{eq:tkprop}
@@ -143,12 +143,14 @@ If $\tk$ has the property that
 \end{equation} 
 then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(0)$.   By reordering the iterated integral, the  second term on the right side of  \eqref{eq:isomidterm} can be written as 
 \begin{align*}
-	\MoveEqLeft{2 \int_{0}^{\infty}  \int_{z/h}^\infty \tk(w) \, \frac{\tKY^{(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}   \, \dif w \, \dif z} \\
-	& =  2\int_{0}^{\infty}  \ttk(z/h) \, \frac{\tKY^{(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}    \, \dif z, 
+	\MoveEqLeft{2 \int_{0}^{\infty}  \int_{z/h}^\infty \tk(w) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}   \, \dif w \, \dif z} \\
+	& =  2\int_{0}^{\infty}  \ttk(z/h) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}    \, \dif z, 
 	\quad \ttk(z) := \int_{z}^\infty \tk(w) \, \dif w \\
-	& =  \frac{2h^{2r+3}}{(2r+2)!} \int_{0}^{\infty}  \ttk(v) \, \tKY^{(2r+2)}(hv) \,  v^{2r+2}    \, \dif v \\	
-	&  \le  \frac{2h^{2r+3}}{(2r+2)!}  \norm[\infty]{\tKY^{(2r+2)}} \int_{0}^{\infty}  \abs{\ttk(v)}  \,  v^{2r+2}    \, \dif v \\	
+	& =  \frac{2h^{2r+3}}{(2r+2)!} \int_{0}^{\infty}  \ttk(v) \, \tK^{y(2r+2)}(hv) \,  v^{2r+2}    \, \dif v \\	
+	&  \le  \frac{2h^{2r+3}}{(2r+2)!}  \norm[\infty]{\tK^{y(2r+2)}} \int_{0}^{\infty}  \abs{\ttk(v)}  \,  v^{2r+2}    \, \dif v \\	
 \end{align*}
+
+\section{Hermite Function Density Kernels}
 
 What kind of $\tk$ satisfy \eqref{eq:tkprop}?
 
