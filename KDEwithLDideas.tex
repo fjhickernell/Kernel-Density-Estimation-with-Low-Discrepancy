@@ -34,21 +34,21 @@
 
 \maketitle
 
-Let $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$.  Low discrepancy sequences are used for computing  $\mu = \Ex(Y)$.  Can they be used for estimation of $\varrho$, the probability density function of $Y$?
+Defined the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Can they be used for estimation of $\varrho$, the probability density (or mass) function of $Y$?
 
-Let $\nu$ be a probability mass or density function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, can be defined as
+Let $\nu$ be a probability mass or density function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, can be defined by the following Riemann-Stieltjes integral\footnote{Standard notation would express this Riemann-Stieltjes integral as $\int_{-\infty}^{\infty} k(z,y) \, \dif N(z)$, where $\nu(z) = N'(z)$ in a generalized sense.  However, we opt for a more intuitive notation since we are working with probability density/mass functions.}:
 \begin{equation}
 	\label{eq:genkde}
-\hvarrho(y,\nu,k) := \int_{-\infty}^{\infty} k(z,y) \, \nu(z) \, \dif z, \qquad y \in \reals,
+\hvarrho(y,\nu,k) := \int_{-\infty}^{\infty} k(z,y) \, \nu(z) \, \dif z, \qquad y \in \reals.
 \end{equation}
-where we call the $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
+We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
 \begin{equation}
 	\label{eq:kintegral}
-	\int_{-\infty}^{\infty} k(z,y) \, \dif z = 1 \qquad \forall y \in \reals.
+	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall y \in \reals.
 \end{equation}
-For \eqref{eq:genkde} to be a good estimator, the density $\nu$ should approximate $\varrho$ well.
+This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,\nu,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,\nu,k)$ might be negative for some values of $y$.  For \eqref{eq:genkde} to be a good estimator, the density $\nu$ should approximate $\varrho$ well.
 
-Let $\varrho_{\vy}$ be the empirical probability mass function of a vector of samppled $Y$ values, $\vy = (y_1, \ldots, y_n)$.  Then a \emph{practical KDE} is
+Let $\varrho_{\vy}$ be the empirical probability mass function of a vector of sampled $Y$ values, $\vy = (y_1, \ldots, y_n)$.  Then a \emph{practical KDE} is
 \begin{equation*}
 \hvarrho(y,\varrho_{\vy},k) = \int_{-\infty}^{\infty} k(z,y) \, \varrho_{\vy}(z) \, \dif z = \frac 1n \sum_{i=1}^n k(y_i,y) \\
  = \frac 1n \sum_{i=1}^n k(f(\vx_i),y) .
