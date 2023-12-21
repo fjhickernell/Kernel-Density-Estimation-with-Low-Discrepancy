@@ -29,42 +29,43 @@
 \begin{document}
 \title{Kernel Density Estimation Using Low Discrepancy Sampling}
 \author{Fred J. Hickernell}
-\begin{abstract}This project is where all of the files and commands go that are needed elsewhere
+\begin{abstract} Coming soon
 \end{abstract}
 
 \maketitle
 
-Defined the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Can they be used for estimation of $\varrho$, the probability density (or mass) function of $Y$?
+Defined the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Suppose that $Y$ is a continuous random variable with cumulative distribution function $F$ and probability density function $\varrho$.  Can low discrepancy sequences be used for estimating $\varrho$ well?  
+%If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
-Let $\nu$ be a probability mass or density function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, can be defined by the following Riemann-Stieltjes integral\footnote{Standard notation would express this Riemann-Stieltjes integral as $\int_{-\infty}^{\infty} k(z,y) \, \dif N(z)$, where $\nu(z) = N'(z)$ in a generalized sense.  However, we opt for a more intuitive notation since we are working with probability density/mass functions.}:
+Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral:
 \begin{equation}
 	\label{eq:genkde}
-\hvarrho(y,\nu,k) := \int_{-\infty}^{\infty} k(z,y) \, \nu(z) \, \dif z, \qquad y \in \reals.
+\hvarrho(y,G,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif G(z), \qquad y \in \reals.
 \end{equation}
 We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
 \begin{equation}
 	\label{eq:kintegral}
 	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall y \in \reals.
 \end{equation}
-This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,\nu,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,\nu,k)$ might be negative for some values of $y$.  For \eqref{eq:genkde} to be a good estimator, the density $\nu$ should approximate $\varrho$ well.
+This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$.  For \eqref{eq:genkde} to be a good estimator, the density $G'$ should approximate $\varrho$ well.
 
-Let $\varrho_{\vy}$ be the empirical probability mass function of a vector of sampled $Y$ values, $\vy = (y_1, \ldots, y_n)$.  Then a \emph{practical KDE} is
+Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy = (y_1, \ldots, y_n) = (f(\vx_1, \ldots, f(\vx_n))$.  Then a \emph{practical KDE} is
 \begin{equation*}
-\hvarrho(y,\varrho_{\vy},k) = \int_{-\infty}^{\infty} k(z,y) \, \varrho_{\vy}(z) \, \dif z = \frac 1n \sum_{i=1}^n k(y_i,y) \\
+\hvarrho(y,F_{\vy},k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F_{\vy}(z)  = \frac 1n \sum_{i=1}^n k(y_i,y) \\
  = \frac 1n \sum_{i=1}^n k(f(\vx_i),y) .
 \end{equation*}
 Moreover, a \emph{smoothed density} can be defined as
 \[
-\hvarrho(y,\varrho,k) = \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx.
+\hvarrho(y,F,k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F(z) = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx.
 \]
 
 The absolute error of the practical KDE  can be bounded as the sum of two terms:
 \begin{align*}
-    \abs{\varrho(y) - \hvarrho(y,\varrho_{\vy},k)} & =
-     \abs{\varrho(y) - \hvarrho(y,\varrho,k) + \hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)} \\
-     & \le  \abs{\varrho(y) - \hvarrho(y,\varrho,k)} + \abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)}.
+    \abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} & =
+     \abs{\varrho(y) - \hvarrho(y,F,k) + \hvarrho(y,F,k) - \hvarrho(y,F_{\vy},k)} \\
+     & \le  \abs{\varrho(y) - \hvarrho(y,F,k)} + \abs{\hvarrho(y,F,k) - \hvarrho(y,F_{\vy},k)}.
 \end{align*}
-The first term depends on the density kernel and measures how well the smoothed density estimates the true density.  The second term measures how well the practical KDE estimates the smoothed density.
+The first term depends on the density kernel and measures how well the smoothed density estimates the true density.  To make it smaller, we would choose $k(\cdot,y)$ to be more peaked.  The second term measures how well the practical KDE estimates the smoothed density.  To make it smaller, we would choose $k(\cdot,y)$ to be \emph{less} peaked so that the integral of $k(f(\cdot),y)$ is easier to approximate.
 We will analyze the two terms separately assuming that $\varrho$ and $k(f(\cdot),y)$ lie in reproducing kernel Hilbert spaces.
 
 Let $\KY:\reals \times \reals \to \reals$ be a reproducing kernel for a Hilbert space containing $\varrho$.  Then an upper bound on the first term in the expression for the error can be bounded via the Cauchy-Schwarz inequality and the Riesz representation theorm:
