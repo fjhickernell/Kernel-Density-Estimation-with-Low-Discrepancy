@@ -25,6 +25,7 @@
 
 \allowdisplaybreaks[1]
 
+\newcommand{\AGSNote}[1]{{\color{cyan} #1}}
 
 \begin{document}
 \title{Kernel Density Estimation Using Low Discrepancy Sampling}
@@ -37,17 +38,17 @@
 Defined the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Suppose that $Y$ is a continuous random variable with cumulative distribution function $F$ and probability density function $\varrho$.  Can low discrepancy sequences be used for estimating $\varrho$ well?  
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
-Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral:
+Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral: \AGSNote{Reference? I haven't seen this before. }
 \begin{equation}
 	\label{eq:genkde}
 \hvarrho(y,G,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif G(z), \qquad y \in \reals.
 \end{equation}
-We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
+\AGSNote{So if $k(z,y) = \delta(z,y)$ then $\hat{\varrho} = \varrho$?} We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
 \begin{equation}
 	\label{eq:kintegral}
-	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall y \in \reals.
+	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
 \end{equation}
-This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$.  For \eqref{eq:genkde} to be a good estimator, the density $G'$ should approximate $\varrho$ well.
+This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$. \AGSNote{What if we try to approximate $\log \varrho$ instead so  $\hat{\varrho} > 0$?} For \eqref{eq:genkde} to be a good estimator, the density $G'$ should approximate $\varrho$ well.
 
 Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy = (y_1, \ldots, y_n) = (f(\vx_1, \ldots, f(\vx_n))$.  Then a \emph{practical KDE} is
 \begin{equation*}
@@ -74,11 +75,11 @@ Let $\KY:\reals \times \reals \to \reals$ be a reproducing kernel for a Hilbert 
 \abs{\varrho(y) - \hvarrho(y,\varrho,k)}
 & = \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z} \\
 \nonumber
-& = \abs{\ip[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \,  \dif z}{\varrho} } \\
+& = \abs{\ip[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \,  \dif z}{\varrho} } \AGSNote{\text{Replace } K^y(z,\cdot) \text{ with } K^y(\cdot,z) \text{?}}\\
 \nonumber
 & \le  \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \norm[\KY]{\varrho},
 \end{align}
-where the part of the error bound depending on density kernel can be rewritten in terms of integrals:
+where the part of the error bound depending on the density kernel can be rewritten in terms of integrals:
 \begin{align}
 \label{eq:kquality}
 \MoveEqLeft{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2} \\ \nonumber
@@ -87,7 +88,7 @@ where the part of the error bound depending on density kernel can be rewritten i
 \end{align}
 \Cref{eq:firstbd} is an upper bound on the first term in the expression for the error that separates the part depending on the choice of the density kernel from the part depending on the probability density.
 
-Let $\KX: [0,1]^d \times [0,1]^d\to \reals$ be a reproducing kernel for a Hilbert space containing $k(y,f(\cdot))$ for all $y \in \reals$ and all $f$ of interest. Then
+Let $\KX: [0,1]^d \times [0,1]^d\to \reals$ be a reproducing kernel for a Hilbert space containing $k(f(\cdot),y)$ for all $y \in \reals$ and all $f$ of interest. Then
 \begin{align*}
 \abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)}
 & = \abs{\int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z -
@@ -107,7 +108,7 @@ where
 \frac 2n \sum_{i=1}^n \int_{[0,1]^d} \KX(\vx,\vx_i) \, \dif \vx \\
 & \qquad \qquad + \frac 1{n^2} \sum_{i,j=1}^n  \KX(\vx_i,\vx_j) .
 \end{align*}
-This is an upper bound on the second term in the expression for the error that separates the part depending on the choice of the kernel evaluated at $(f(\cdot),y)$ from the part depending on the sample nodes.
+This is an upper bound on the second term in the expression for the error that separates the part depending on the choice of the density kernel evaluated at $(f(\cdot),y)$ from the part depending on the sample nodes.
 
 
 \section{Stationary Density Kernels}
@@ -138,11 +139,11 @@ It follows from this approximation
 	\qquad \qquad 
 	+ 2 \int_{0}^{\infty} \tk(w) \,  \int_0^{hw} \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!} \, \dif z  \, \dif w
 \end{align}
-If $\tk$ has the property that 
+\AGSNote{Where does the factor of $2$ above come from?} If $\tk$ has the property that 
 \begin{equation} \label{eq:tkprop}
-	\int_{-\infty}^{\infty} \tk(w) w^{2\ell}  \, \dif w =  \delta_{0,\ell},
+	\int_{-\infty}^{\infty} \tk(w) w^{2\ell}  \, \dif w =  \delta_{0,\ell}, \qquad l=0,\dots,r,
 \end{equation} 
-then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(0)$.   By reordering the iterated integral, the  second term on the right side of  \eqref{eq:isomidterm} can be written as 
+then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(0)$ \AGSNote{recalling that $\int_{-\infty}^\infty \tilde{k}(w) \dif w = 1$ from \eqref{eq:kintegral}}.   By reordering the iterated integral, the  second term on the right side of  \eqref{eq:isomidterm} can be written as 
 \begin{align*}
 	\MoveEqLeft{2 \int_{0}^{\infty}  \int_{z/h}^\infty \tk(w) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}   \, \dif w \, \dif z} \\
 	& =  2\int_{0}^{\infty}  \ttk(z/h) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}    \, \dif z, 
@@ -150,6 +151,7 @@ then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(
 	& =  \frac{2h^{2r+3}}{(2r+2)!} \int_{0}^{\infty}  \ttk(v) \, \tK^{y(2r+2)}(hv) \,  v^{2r+2}    \, \dif v \\	
 	&  \le  \frac{2h^{2r+3}}{(2r+2)!}  \norm[\infty]{\tK^{y(2r+2)}} \int_{0}^{\infty}  \abs{\ttk(v)}  \,  v^{2r+2}    \, \dif v \\	
 \end{align*}
+using the substitution $v = z/h$.
 
 \section{Hermite Function Density Kernels}
 
