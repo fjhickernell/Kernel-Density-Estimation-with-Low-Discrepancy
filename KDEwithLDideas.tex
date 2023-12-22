@@ -26,6 +26,7 @@
 \allowdisplaybreaks[1]
 
 \newcommand{\AGSNote}[1]{{\color{cyan} #1}}
+\newcommand{\FJHNote}[1]{{\color{blue} #1}}
 
 \begin{document}
 \title{Kernel Density Estimation Using Low Discrepancy Sampling}
@@ -43,12 +44,12 @@ Let $G$ be a cumulative probability distribution function.  A generalized kernel
 	\label{eq:genkde}
 \hvarrho(y,G,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif G(z), \qquad y \in \reals.
 \end{equation}
-\AGSNote{So if $k(z,y) = \delta(z,y)$ then $\hat{\varrho} = \varrho$?} We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
+\AGSNote{So if $k(z,y) = \delta(z,y)$ then $\hat{\varrho} = \varrho$?} \FJHNote{Only if $G'=\rho$} We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
 \begin{equation}
 	\label{eq:kintegral}
 	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
 \end{equation}
-This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$. \AGSNote{What if we try to approximate $\log \varrho$ instead so  $\hat{\varrho} > 0$?} For \eqref{eq:genkde} to be a good estimator, the density $G'$ should approximate $\varrho$ well.
+This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$. \AGSNote{What if we try to approximate $\log \varrho$ instead so  $\hat{\varrho} > 0$?} \FJHNote{I think that this is hard to do.} For \eqref{eq:genkde} to be a good estimator, $G$ should approximate $F$ well, and $k(\cdot,y)$ should approximate the Dirac delta generalized function $\delta(\cdot - y)$.
 
 Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy = (y_1, \ldots, y_n) = (f(\vx_1, \ldots, f(\vx_n))$.  Then a \emph{practical KDE} is
 \begin{equation*}
@@ -75,7 +76,8 @@ Let $\KY:\reals \times \reals \to \reals$ be a reproducing kernel for a Hilbert 
 \abs{\varrho(y) - \hvarrho(y,\varrho,k)}
 & = \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z} \\
 \nonumber
-& = \abs{\ip[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \,  \dif z}{\varrho} } \AGSNote{\text{Replace } K^y(z,\cdot) \text{ with } K^y(\cdot,z) \text{?}}\\
+& = \abs{\ip[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \,  \dif z}{\varrho} } \AGSNote{\text{Replace } K^y(z,\cdot) \text{ with } K^y(\cdot,z) \text{?}} \\
+& \nonumber \hspace{20ex} \FJHNote{\KY \text{ is symmetric in its arguments}}\\
 \nonumber
 & \le  \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \norm[\KY]{\varrho},
 \end{align}
@@ -139,11 +141,11 @@ It follows from this approximation
 	\qquad \qquad
 	+ 2 \int_{0}^{\infty} \tk(w) \,  \int_0^{hw} \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!} \, \dif z  \, \dif w
 \end{align}
-\AGSNote{Where does the factor of $2$ above come from?} If $\tk$ has the property that
+\AGSNote{Where does the factor of $2$ above come from?} \FJHNote{Because the original integrral is over $\reals$, but we are just looking from $0$ to $\infty$, and the integrand is even.}If $\tk$ has the property that
 \begin{equation} \label{eq:tkprop}
 	\int_{-\infty}^{\infty} \tk(w) w^{2\ell}  \, \dif w =  \delta_{0,\ell}, \qquad l=0,\dots,r,
 \end{equation}
-then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(0)$ \AGSNote{recalling that $\int_{-\infty}^\infty \tilde{k}(w) \dif w = 1$ from \eqref{eq:kintegral}}.   By reordering the iterated integral, the  second term on the right side of  \eqref{eq:isomidterm} can be written as
+then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(0)$, recalling that $\int_{-\infty}^\infty \tilde{k}(w) \dif w = 1$ from \eqref{eq:kintegral}.   By reordering the iterated integral, the  second term on the right side of  \eqref{eq:isomidterm} can be written as
 \begin{align*}
 	\MoveEqLeft{2 \int_{0}^{\infty}  \int_{z/h}^\infty \tk(w) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}   \, \dif w \, \dif z} \\
 	& =  2\int_{0}^{\infty}  \ttk(z/h) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}    \, \dif z,
