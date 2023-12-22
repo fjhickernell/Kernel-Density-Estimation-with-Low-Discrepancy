@@ -38,7 +38,7 @@
 Defined the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Suppose that $Y$ is a continuous random variable with cumulative distribution function $F$ and probability density function $\varrho$.  Can low discrepancy sequences be used for estimating $\varrho$ well?
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
-Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral: \AGSNote{Reference? I haven't seen this before. }
+Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral \cite{RSIntegral}: \AGSNote{Reference? I haven't seen this before. }
 \begin{equation}
 	\label{eq:genkde}
 \hvarrho(y,G,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif G(z), \qquad y \in \reals.
@@ -139,11 +139,11 @@ It follows from this approximation
 	\qquad \qquad
 	+ 2 \int_{0}^{\infty} \tk(w) \,  \int_0^{hw} \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!} \, \dif z  \, \dif w
 \end{align}
-\AGSNote{Where does the factor of $2$ above come from?} If $\tk$ has the property that 
+\AGSNote{Where does the factor of $2$ above come from?} If $\tk$ has the property that
 \begin{equation} \label{eq:tkprop}
 	\int_{-\infty}^{\infty} \tk(w) w^{2\ell}  \, \dif w =  \delta_{0,\ell}, \qquad l=0,\dots,r,
-\end{equation} 
-then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(0)$ \AGSNote{recalling that $\int_{-\infty}^\infty \tilde{k}(w) \dif w = 1$ from \eqref{eq:kintegral}}.   By reordering the iterated integral, the  second term on the right side of  \eqref{eq:isomidterm} can be written as 
+\end{equation}
+then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(0)$ \AGSNote{recalling that $\int_{-\infty}^\infty \tilde{k}(w) \dif w = 1$ from \eqref{eq:kintegral}}.   By reordering the iterated integral, the  second term on the right side of  \eqref{eq:isomidterm} can be written as
 \begin{align*}
 	\MoveEqLeft{2 \int_{0}^{\infty}  \int_{z/h}^\infty \tk(w) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}   \, \dif w \, \dif z} \\
 	& =  2\int_{0}^{\infty}  \ttk(z/h) \, \frac{\tK^{y(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}    \, \dif z,
