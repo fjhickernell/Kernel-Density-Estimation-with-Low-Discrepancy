@@ -20,6 +20,7 @@
 \newcommand{\KY}{K_y}
 \newcommand{\tKY}{\widetilde{K}_y}
 \newcommand{\KX}{K_{\vx}}
+\newcommand{\hKX}{\widehat{K}_{\vx}}
 \newcommand{\tk}{\tilde{k}}
 \DeclareMathOperator{\ttk}{\widetilde{tail}}
 
@@ -41,19 +42,19 @@
 Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Suppose that $Y$ is a continuous random variable with cumulative distribution function $F$ and probability density function $\varrho$.  Can low discrepancy sequences be used for estimating $\varrho$ well?
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
-Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral \cite{RSIntegral}: 
+Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral \cite{RSIntegral}:
 \begin{equation}
 	\label{eq:genkde}
 \hvarrho(y,G,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif G(z), \qquad y \in \reals.
 \end{equation}
-%\AGSNote{So if $k(z,y) = \delta(z,y)$ then $\hat{\varrho} = \varrho$?} \FJHNote{Only if $G'=\rho$} 
+%\AGSNote{So if $k(z,y) = \delta(z,y)$ then $\hat{\varrho} = \varrho$?} \FJHNote{Only if $G'=\rho$}
 We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
 \begin{equation}
 	\label{eq:kintegral}
 	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
 \end{equation}
-This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$. 
-%\AGSNote{What if we try to approximate $\log \varrho$ instead so  $\hat{\varrho} > 0$?} \FJHNote{I think that this is hard to do.} 
+This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$.
+%\AGSNote{What if we try to approximate $\log \varrho$ instead so  $\hat{\varrho} > 0$?} \FJHNote{I think that this is hard to do.}
 For \eqref{eq:genkde} to be a good estimator, $G$ should approximate $F$ well, and $k(\cdot,y)$ should approximate the Dirac delta generalized function $\delta(\cdot - y)$.
 
 Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy = (y_1, \ldots, y_n) = (f(\vx_1, \ldots, f(\vx_n))$.  Then a \emph{practical KDE} is
@@ -203,8 +204,28 @@ Taking $\tk$ to be a linear combination of the first $r$ even Hermite polynomial
 
 
 
+\section{Error in Estimating the Smoothed Density with Tensor Product Kernels}\label{sec:errsmthdens}
+Now we look at the second part of the error namely, $	\abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)}$.  We also assume that $\KX$ is of tensor product form, namely,
+\begin{equation*}
+	\KX(\vt,\vx) = \prod_{\ell = 1}^d [1 + \gamma_\ell \hKX(t_\ell,x_\ell) ] = \sum_{\fu \subseteq \{1, \ldots, d\}} \gamma_{\fu} \KX_{\fu}(\vt_\fu,\vx_\fu),
+\end{equation*}
+where the $\gamma_\ell$ are coordinate weights, $\gamma_\fu = \prod_{\ell \in \fu} \gamma_\ell}$, and $\KX_{\fu}(\vt_\fu,\vx_\fu) = \prod_{\ell \in \fu} \hKX(t_\ell,x_\ell)$.
+Moreover, $\vx_\fu$ is the vector of components of $\vx$ indexed by the set $\fu$. Any $g$ in the Hilbert space with reproducing kernel $\KX$, one may be decomposed as $g(\vx) = \sum_{\fu \subseteq \{1, \ldots, d\}} g_\fu(\vx_\fu)$, where each $g_\fu$ is in the Hilbert space with reproducing kernel $\hKX_\fu$.
 
-
+Under these assumptions, the error in \eqref{eq"??} can be bounded as
+\begin{equation*}
+	\abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)} \le  \norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx -
+		\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)} \norm[\KX]{k(f(\cdot),y) } ,
+\end{equation*}
+where
+\begin{align*}
+	\MoveEqLeft{\norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx -
+			\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)}^2} \\
+	&=  \sum_{\fu \subseteq \{1, \ldots, d\}} \gamma_\fu \bigg [\int_{[0,1]^\fu \times [0,1]^\fu} \KX_\fu(\vx_\fu,\vt_\fu) \, \dif \vx_\fu \, \dif \vt_\fu -
+	\frac 2n \sum_{i=1}^n \int_{[0,1]^\fu} \KX(\vx_\fu,\vx_{i,\fu}) \, \dif \vx_\fu \\
+	& \qquad \qquad + \frac 1{n^2} \sum_{i,j=1}^n  \KX(\vx_{i,\fu},\vx_{j,\fu}) \right \bigg].
+\end{align*}
+This is an upper bound on the second term in the expression for the error that separates the part depending on the choice of the density kernel evaluated at $(f(\cdot),y)$ from the part depending on the sample nodes.
 
 
 
@@ -259,5 +280,6 @@ then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(
 	\int_{0}^{\infty}  \frac 1h  \int_{z}^\infty \tk(w/h) \, \frac{\tKY^{(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}   \, \dif w \, \dif z
 	& =  \int_{0}^{\infty}  \ttk(z/h) \, \frac{\tKY^{(2r+2)}(z) \,  z^{2r+2}}{(2r+2)!}    \, \dif z
 \end{align*}
+
 
 
