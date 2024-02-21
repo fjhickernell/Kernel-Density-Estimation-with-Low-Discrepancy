@@ -20,8 +20,8 @@
 \newcommand{\hvarrho}{\widehat{\varrho}}
 \newcommand{\KY}{K_y}
 \newcommand{\tKY}{\widetilde{K}_y}
-\newcommand{\KX}{K_{\vx}}
-\newcommand{\hKX}{\widehat{K}_{\vx}}
+\newcommand{\KX}{{K_{\vx}}}
+\newcommand{\hKX}{{\widehat{K}_{\vx}}}
 \newcommand{\tk}{\tilde{k}}
 \DeclareMathOperator{\ttk}{\widetilde{tail}}
 
@@ -40,11 +40,34 @@
 
 \section{The Problem} \label{sec:problem}
 
-Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Suppose that $Y$ is a continuous random variable with cumulative distribution function $F$ and probability density function $\varrho$.  Can low discrepancy sequences be used for estimating $\varrho$ well?
+Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences, $\{\vx_1, \vx_2, \ldots \}$, are used for accurately approximating  the population mean, $\mu = \Ex(Y)$, by the sample mean, $\hmu = n^{-1} \sum_{i=1}^n f(\vx_i)$.   Can low discrepancy (LD) sequences be used for estimating $\varrho$ well?
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
+Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the $n \times d$ matrix formed from the data sites, i.e.,  $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  as 
+\begin{equation} \label{eq:kdedef}
+	\hvarrho(y,F_{\vy},k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F_{\vy}(z)  = \frac 1n \sum_{i=1}^n k(y_i,y) \\
+	= \frac 1n \sum_{i=1}^n k(f(\vx_i),y) = \int_{[0,1]^d} k(f(\vx),y) \, \dif F_\mX(\vx),
+\end{equation}
+where $k:\reals \times \reals \to \reals$ is called a \emph{smoothing kernel}.  Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
+\begin{equation}
+	\label{eq:kintegral}
+	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
+\end{equation}
+This implies that each datum, $y_i$, is given a weight of unity that is spread over the real line.  Consequently, $\int_{-\infty}^{\infty} \hvarrho(y,F_{\vy},k) \, dy = 1$.  If $k$ is non-negative, then $\hvarrho(\cdot,F_{\vy},k)$ is non-negative, and so a true probability density, but we do not necessarily assume that $k$ is non-negative.
 
 
+The error, 
+
+
+
+
+The smoothing kernel, $k$, defines a \emph{smoothed density}:
+\[
+\hvarrho(y,F,k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F(z) = \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx.
+\]
+The smoothed density will approximate the true density well if $k(\cdot,y)$ approximates the Dirac delta generalized function $\delta(\cdot - y)$.  However, a peaky $k(\cdot,y)$ in \eqref{eq:kdedef} yields a KDE that is inaccurate due to its dependence on too few data points.
+
+%%%%%%%Stopped here
 
 Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral \cite{RSIntegral}: 
 \begin{equation}
@@ -70,6 +93,8 @@ Moreover, a \emph{smoothed density} can be defined as
 \[
 \hvarrho(y,F,k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F(z) = \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx.
 \]
+
+
 
 Our problem is to find a good KDE, perhaps using low discrepancy sampling, which has a small absolute error, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, for $y \in \reals$.
 
@@ -143,6 +168,8 @@ Alternatively, one might write the probability density as a derivative of the cu
 \end{equation*}
 However, the integrand $\bbone_{(-\infty,z)}(f(\cdot))$, does not have the smoothness properties desired for an analysis using low discrepancy sequences. Indeed, the kernel density estimate succeeds by essentially replacing a function with jump discontinuities, $\bbone_{(-\infty,z)}(f(\cdot))$, by a smoothed version and then pulling the derivative inside the integral.
 
+
+\end{document}
 
 \section{Stationary Density Kernels}
 
