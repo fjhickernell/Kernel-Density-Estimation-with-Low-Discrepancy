@@ -3,6 +3,7 @@
 \usepackage[hyphens]{url}
 \usepackage[utf8]{inputenc}
 \usepackage{esdiff}
+\usepackage{bbm}
 \usepackage[capitalise]{cleveref}
 \usepackage[margin=2.5cm]{geometry}
 \input{FJHDef.tex}
@@ -40,6 +41,9 @@
 
 Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences are used for approximating  $\mu = \Ex(Y)$.  Suppose that $Y$ is a continuous random variable with cumulative distribution function $F$ and probability density function $\varrho$.  Can low discrepancy sequences be used for estimating $\varrho$ well?
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
+
+
+
 
 Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral \cite{RSIntegral}: 
 \begin{equation}
