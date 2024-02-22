@@ -43,7 +43,7 @@
 Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences, $\{\vx_1, \vx_2, \ldots \}$, are used for accurately approximating  the population mean, $\mu = \Ex(Y)$, by the sample mean, $\hmu = n^{-1} \sum_{i=1}^n f(\vx_i)$.   Can low discrepancy (LD) sequences be used for estimating $\varrho$ well?
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
-Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the $n \times d$ matrix formed from the data sites, i.e.,  $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  as 
+Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the \emph{design}, i.e., the $n \times d$ matrix formed from the data sites, $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  as
 \begin{equation} \label{eq:kdedef}
 	\hvarrho(y,F_{\vy},k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F_{\vy}(z)  = \frac 1n \sum_{i=1}^n k(y_i,y) \\
 	= \frac 1n \sum_{i=1}^n k(f(\vx_i),y) = \int_{[0,1]^d} k(f(\vx),y) \, \dif F_\mX(\vx),
@@ -56,47 +56,30 @@ where $k:\reals \times \reals \to \reals$ is called a \emph{smoothing kernel}.  
 This implies that each datum, $y_i$, is given a weight of unity that is spread over the real line.  Consequently, $\int_{-\infty}^{\infty} \hvarrho(y,F_{\vy},k) \, dy = 1$.  If $k$ is non-negative, then $\hvarrho(\cdot,F_{\vy},k)$ is non-negative, and so a true probability density, but we do not necessarily assume that $k$ is non-negative.
 
 
-The error, 
-
-
-
-
-The smoothing kernel, $k$, defines a \emph{smoothed density}:
-\[
-\hvarrho(y,F,k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F(z) = \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx.
-\]
-The smoothed density will approximate the true density well if $k(\cdot,y)$ approximates the Dirac delta generalized function $\delta(\cdot - y)$.  However, a peaky $k(\cdot,y)$ in \eqref{eq:kdedef} yields a KDE that is inaccurate due to its dependence on too few data points.
-
-%%%%%%%Stopped here
-
-Let $G$ be a cumulative probability distribution function.  A generalized kernel density estimator (KDE), $\hvarrho(\cdot,\nu,k)$, for the density $\varrho$, can be defined by the following Riemann-Stieltjes integral \cite{RSIntegral}: 
+The error in approximating the density at a point by the KDE, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, can be bounded in terms of a sum:
+\begin{align}
+	\label{eq:KDEerrassum}
+	\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} & =
+	\abs{\varrho(y) - \hvarrho(y,F,k) + \hvarrho(y,F,k) - \hvarrho(y,F_{\vy},k)} \\
+	\nonumber
+	& \le  \abs{\varrho(y) - \hvarrho(y,F,k)} + \abs{\hvarrho(y,F,k) - \hvarrho(y,F_{\vy},k)},
+\end{align}
+where the smoothing kernel, $k$, defines a \emph{smoothed density}:
+\begin{multline}
+	\label{eq:smoothdens}
+\hvarrho(y,F,k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F(z)
+= \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z \\
+= \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx
+ = \int_{[0,1]^d} k(f(\vx),y) \,  \dif F_{\mathrm{unif}}(\vx),
+\end{multline}
+where $F_{\mathrm{unif}}$ denotes the uniform distribution function over the unit cube.  Then \eqref{eq:kdedef} and \eqref{eq:smoothdens} can be used to express the bound in \eqref{eq:KDEerrassum} as
 \begin{equation}
-	\label{eq:genkde}
-\hvarrho(y,G,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif G(z), \qquad y \in \reals.
+	\label{eq:KDEerrassumA}
+	\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} \le \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z } + \abs{\int_{[0,1]^d} k(f(\vx),y) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)},
 \end{equation}
-%\AGSNote{So if $k(z,y) = \delta(z,y)$ then $\hat{\varrho} = \varrho$?} \FJHNote{Only if $G'=\rho$}
-We call $k:\reals \times \reals \to \reals$ the \emph{density kernel}. Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
-\begin{equation}
-	\label{eq:kintegral}
-	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
-\end{equation}
-This ensures that $\displaystyle \int_{-\infty}^{\infty} \hvarrho(y,G,k) \, \dif y = 1$.  We do not require $k$ to be non-negative, which means that $\hvarrho(y,G,k)$ might be negative for some values of $y$.
-%\AGSNote{What if we try to approximate $\log \varrho$ instead so  $\hat{\varrho} > 0$?} \FJHNote{I think that this is hard to do.}
-For \eqref{eq:genkde} to be a good estimator, $G$ should approximate $F$ well, and $k(\cdot,y)$ should approximate the Dirac delta generalized function $\delta(\cdot - y)$.
-
-Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy = (y_1, \ldots, y_n) = (f(\vx_1, \ldots, f(\vx_n))$.  Then a \emph{practical KDE} is
-\begin{equation*}
-\hvarrho(y,F_{\vy},k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F_{\vy}(z)  = \frac 1n \sum_{i=1}^n k(y_i,y) \\
- = \frac 1n \sum_{i=1}^n k(f(\vx_i),y) .
-\end{equation*}
-Moreover, a \emph{smoothed density} can be defined as
-\[
-\hvarrho(y,F,k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F(z) = \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx.
-\]
+The smoothed density approximates the true density well and makes the first term on the right side of \eqref{eq:KDEerrassum} if $k(\cdot,y)$ approximates the Dirac delta generalized function $\delta(\cdot - y)$.  However, a peaky $k(\cdot,y)$ makes the second term on the right side of \eqref{eq:KDEerrassum} large due to the difficulty in approximating the integrals of peaky functions.  The error analysis in the following sections explains how to optimize the choice of the smoothing kernel, $k$, in light of this trade-off.
 
 
-
-Our problem is to find a good KDE, perhaps using low discrepancy sampling, which has a small absolute error, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, for $y \in \reals$.
 
 \section{Error Analysis}\label{sec:error_analysis}
 The absolute error of the practical KDE  can be bounded as the sum of two terms:
