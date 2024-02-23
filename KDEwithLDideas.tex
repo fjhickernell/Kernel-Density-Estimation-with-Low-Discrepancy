@@ -8,6 +8,7 @@
 \usepackage[margin=2.5cm]{geometry}
 \input{FJHDef.tex}
 
+\newtheorem{theorem}{Theorem}
 
 \usepackage{algpseudocode}
 \usepackage{algorithm, algorithmicx}
@@ -24,6 +25,8 @@
 \newcommand{\hKX}{{\widehat{K}_{\vx}}}
 \newcommand{\tk}{\tilde{k}}
 \DeclareMathOperator{\ttk}{\widetilde{tail}}
+\DeclareMathOperator{\smooth}{smth}
+\DeclareMathOperator{\disc}{disc}
 
 \allowdisplaybreaks[1]
 
@@ -40,7 +43,7 @@
 
 \section{The Problem} \label{sec:problem}
 
-Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences, $\{\vx_1, \vx_2, \ldots \}$, are used for accurately approximating  the population mean, $\mu = \Ex(Y)$, by the sample mean, $\hmu = n^{-1} \sum_{i=1}^n f(\vx_i)$.   Can low discrepancy (LD) sequences be used for estimating $\varrho$ well?
+Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences, $\{\vx_1, \vx_2, \ldots \}$, are used for accurately approximating  the population mean, $\mu = \Ex(Y)$, by the sample mean, $\hmu = n^{-1} \sum_{i=1}^n f(\vx_i)$.   Can low discrepancy (LD) sequences be used for estimating the density of $Y$ well?
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
 Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the \emph{design}, i.e., the $n \times d$ matrix formed from the data sites, $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  as
@@ -48,15 +51,15 @@ Suppose that  the random variable $Y$ is continuous, and has cumulative distribu
 	\hvarrho(y,F_{\vy},k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F_{\vy}(z)  = \frac 1n \sum_{i=1}^n k(y_i,y) \\
 	= \frac 1n \sum_{i=1}^n k(f(\vx_i),y) = \int_{[0,1]^d} k(f(\vx),y) \, \dif F_\mX(\vx),
 \end{equation}
-where $k:\reals \times \reals \to \reals$ is called a \emph{smoothing kernel}.  Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(\cdot,y)$ should typically be larger near $y$ than away from $y$.   Moreover, we assume that
+where $k:\reals \times \reals \to \reals$ is called a \emph{smoothing kernel}.  Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(z,y)$ should typically be larger for $z$ near $y$ than for $z$ away from $y$.   Moreover, we assume that
 \begin{equation}
 	\label{eq:kintegral}
 	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
 \end{equation}
-This implies that each datum, $y_i$, is given a weight of unity that is spread over the real line.  Consequently, $\int_{-\infty}^{\infty} \hvarrho(y,F_{\vy},k) \, dy = 1$.  If $k$ is non-negative, then $\hvarrho(\cdot,F_{\vy},k)$ is non-negative, and so a true probability density, but we do not necessarily assume that $k$ is non-negative.
+This implies that each datum, $y_i$, is given a weight of unity that is spread over the real line.  Consequently, $\int_{-\infty}^{\infty} \hvarrho(y,F_{\vy},k) \, dy = 1$.  If $k$ is non-negative, then the KDE, $\hvarrho(\cdot,F_{\vy},k)$, is non-negative, and so a true probability density.  But, we do not necessarily assume that $k$ is non-negative.
 
 
-The error in approximating the density at a point by the KDE, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, can be bounded in terms of a sum:
+The error in approximating the density at a point by the KDE, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, can be bounded in terms of a sum of two terms:
 \begin{align}
 	\label{eq:KDEerrassum}
 	\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} & =
@@ -67,94 +70,78 @@ The error in approximating the density at a point by the KDE, $\abs{\varrho(y) -
 where the smoothing kernel, $k$, defines a \emph{smoothed density}:
 \begin{multline}
 	\label{eq:smoothdens}
-\hvarrho(y,F,k) = \int_{-\infty}^{\infty} k(z,y) \, \dif F(z)
+\hvarrho(y,F,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F(z)
 = \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z \\
 = \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx
  = \int_{[0,1]^d} k(f(\vx),y) \,  \dif F_{\mathrm{unif}}(\vx),
 \end{multline}
-where $F_{\mathrm{unif}}$ denotes the uniform distribution function over the unit cube.  Then \eqref{eq:kdedef} and \eqref{eq:smoothdens} can be used to express the bound in \eqref{eq:KDEerrassum} as
+and $F_{\mathrm{unif}}$ denotes the uniform distribution function over the unit cube.  Then \eqref{eq:kdedef} and \eqref{eq:smoothdens} can be used to express the error bound in \eqref{eq:KDEerrassum} as
 \begin{equation}
 	\label{eq:KDEerrassumA}
 	\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} \le \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z } + \abs{\int_{[0,1]^d} k(f(\vx),y) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)},
 \end{equation}
-The smoothed density approximates the true density well and makes the first term on the right side of \eqref{eq:KDEerrassum} if $k(\cdot,y)$ approximates the Dirac delta generalized function $\delta(\cdot - y)$.  However, a peaky $k(\cdot,y)$ makes the second term on the right side of \eqref{eq:KDEerrassum} large due to the difficulty in approximating the integrals of peaky functions.  The error analysis in the following sections explains how to optimize the choice of the smoothing kernel, $k$, in light of this trade-off.
+The first term on the right above is the error in approximating the true density by the smoothed density.  It can be made smaller by choosing $k(\cdot,y)$ to approximate the Dirac delta generalized function $\delta(\cdot - y)$.  The second term on the right in  \eqref{eq:KDEerrassum} is the error in approximating the integral defining the smoothed density by a cubature defined in terms of the design, $\mX$.  Choosing a peaky $k(\cdot,y)$  will tend to make this term large.  The error analysis in the following sections explains how to optimize the choice of the smoothing kernel, $k$, in light of this trade-off.
 
 
 
 \section{Error Analysis}\label{sec:error_analysis}
-The absolute error of the practical KDE  can be bounded as the sum of two terms:
-\begin{align*}
-    \abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} & =
-     \abs{\varrho(y) - \hvarrho(y,F,k) + \hvarrho(y,F,k) - \hvarrho(y,F_{\vy},k)} \\
-     & \le  \abs{\varrho(y) - \hvarrho(y,F,k)} + \abs{\hvarrho(y,F,k) - \hvarrho(y,F_{\vy},k)}.
-\end{align*}
-The first term depends on the density kernel and measures how well the smoothed density estimates the true density.  To make it smaller, we would choose $k(\cdot,y)$ to be more peaked.  The second term measures how well the practical KDE estimates the smoothed density.  To make it smaller, we would choose $k(\cdot,y)$ to be \emph{less} peaked so that the integral of $k(f(\cdot),y)$ is easier to approximate.
-We will analyze the two terms separately assuming that $\varrho$ and $k(f(\cdot),y)$ lie in reproducing kernel Hilbert spaces.
+Bounding the error of the KDE in terms of the sum of two terms facilitates the error analysis for the following reason:
+\begin{itemize}
+	\item The first term can be bounded in terms of the choice of smoothing kernel, $k$, by assuming that $\varrho$ lies in a Hilbert space with reproducing kernel $\KY:\reals \times \reals \to \reals$.
 
-Let $\KY:\reals \times \reals \to \reals$ be a reproducing kernel for a Hilbert space containing $\varrho$.  Then an upper bound on the first term in the expression for the error can be bounded via the Cauchy-Schwarz inequality and the Riesz representation theorm:
+	\item The second term can be bounded in terms of the choice of smoothing kernel and design, by assuming that $k(f(\cdot),y)$  lies in a Hilbert space with reproducing kernel $\KX: [0,1]^d \times [0,1]^d\to \reals$ for all $y \in \reals$.
+\end{itemize}
+
+Under the first of these bulleted assumptions, an upper bound on the first term on the right in \eqref{eq:KDEerrassumA} can be bounded via the Cauchy-Schwarz inequality and the Riesz representation theorem:
 \begin{align}
 \label{eq:firstbd}
-\abs{\varrho(y) - \hvarrho(y,\varrho,k)}
-& = \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z} \\
-\nonumber
+\abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z}
 & = \abs{\ip[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \,  \dif z}{\varrho} } \\
 \nonumber
-& \le  \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \norm[\KY]{\varrho},
+& \le  \underbrace{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}}_{=: \smooth(k,\KY)} \, \norm[\KY]{\varrho},
 \end{align}
 where the part of the error bound depending on the density kernel can be rewritten in terms of integrals:
 \begin{align}
 \label{eq:kquality}
-\MoveEqLeft{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2} \\ \nonumber
-&=  \KY(y,y) - 2 \int_{-\infty}^{\infty} k(z,y) \, \KY(z,y) \, \dif z \\ \nonumber
-& \qquad \qquad + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  k(z,y) \, \KY(z,t) \, k(t,y)\, \dif z \, \dif t.
+\smooth^2(k,\KY) &= \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2 \\
+\nonumber
+&=  \KY(y,y) - 2 \int_{-\infty}^{\infty} k(z,y) \, \KY(z,y) \, \dif z  + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  k(z,y) \, \KY(z,t) \, k(t,y)\, \dif z \, \dif t.
 \end{align}
-\Cref{eq:firstbd} is an upper bound on the first term in the expression for the error that separates the part depending on the choice of the density kernel from the part depending on the probability density.
+With additional assumptions about the form of the smoothing kernel, it is possible to analyze how quickly this term vanishes as the smoothing kernel becomes more peaked.
 
-Let $\KX: [0,1]^d \times [0,1]^d\to \reals$ be a reproducing kernel for a Hilbert space containing $k(f(\cdot),y)$ for all $y \in \reals$ and all $f$ of interest. Then
-\begin{align*}
-\abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)}
-& = \abs{\int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z -
-\frac 1n \sum_{i=1}^n k(y_i,y)} \\
-& = \abs{\int_{[0,1]^d} k(f(\vx),y) \, \dif \vx -
-\frac 1n \sum_{i=1}^n k(f(\vx_i),y)} \\
-& = \abs{\ip[\KY]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx -
-\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)}{k(f(\cdot),y) }} \\
-& \le  \norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx -
-\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)} \norm[\KX]{k(f(\cdot),y) } ,
-\end{align*}
+Under the second bulleted assumption above, the second term on the right in \eqref{eq:KDEerrassumA} can also be bounded:
+\begin{align}
+	\label{eq:secondbd}
+\abs{\int_{[0,1]^d} k(f(\vx),y) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}
+& = \abs{\ip[\KY]{\int_{[0,1]^d} \KX(\cdot,\vx) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}{k(f(\cdot),y) }} \\
+\nonumber
+& \le  \underbrace{\norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}}_{=:\disc(\mX,\KX)} \, \norm[\KX]{k(f(\cdot),y) } ,
+\end{align}
 where
 \begin{align*}
-\MoveEqLeft{\norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \, \dif \vx -
-\frac 1n \sum_{i=1}^n \KX(\cdot,\vx_i)}^2} \\
+\disc^2(\mX,\KX) & = \norm[\KX]{\int_{[0,1]^d} \KX(\cdot,\vx) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2 \\
+\nonumber
 &=  \int_{[0,1]^d \times [0,1]^d} \KX(\vx,\vt) \, \dif \vx \, \dif \vt -
-\frac 2n \sum_{i=1}^n \int_{[0,1]^d} \KX(\vx,\vx_i) \, \dif \vx \\
-& \qquad \qquad + \frac 1{n^2} \sum_{i,j=1}^n  \KX(\vx_i,\vx_j) .
+\frac 2n \sum_{i=1}^n \int_{[0,1]^d} \KX(\vx,\vx_i) \, \dif \vx  + \frac 1{n^2} \sum_{i,j=1}^n  \KX(\vx_i,\vx_j) .
 \end{align*}
-This is an upper bound on the second term in the expression for the error that separates the part depending on the choice of the density kernel evaluated at $(f(\cdot),y)$ from the part depending on the sample nodes.
+Here, the discrepancy, $\disc(\mX,\KX)$ measures the quality of the design, $\mX$, and $\norm[\KX]{k(f(\cdot),y) }$ measures of the peakiness or roughness of the smoothing kernel composed with $f$, the function defining the random variable of interest.
 
-One may wonder why the error, $\varrho(y) - \hvarrho(y,F_{\vy},k)$ is divided into two parts, and each analyzed separately.  Let's consider why.  The analysis above relies on the fact that
+To summarize the argument above we have the following theorem.
+\begin{theorem}\label{thm:errbd} The error of the KDE is bounded as
+	\begin{equation}
+			\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} \le \smooth(k,\KY) \norm[\KY]{\varrho} + \disc(\mX,\KX) \norm[\KX]{k(f(\cdot),y)}.
+	\end{equation}
+\end{theorem}
+A KDE for general $f$ and corresponding $\varrho$, should
 \begin{itemize}
-	\item $\displaystyle \varrho \mapsto \varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z$ is a continuous, linear functional on a Hilbert space of functions defined on $\reals$ with reproducing kernel $\KY$, and
-	\item $\displaystyle g \mapsto \int_{[0,1]^d} g(\vx) \, \dif \vx -
-	\frac 1n \sum_{i=1}^n g(\vx_i)$ is a continuous, linear functional on a Hilbert space of functions defined on $[0,1]^d$ with reproducing kernel $\KX$.
+	\item Choose $k$ to make $\smooth(k,\KY)$ small enough without making $\norm[\KX]{k(f(\cdot),y)}$ too large, and
+	\item Choose $\mX$ to make the discrepancy small.
 \end{itemize}
 
-If we use one continuous, linear functional on a Hilbert space of functions defined on $[0,1]^d$ to express the error, then we need to represent $\varrho(y)$ as a linear functional.  One possibility is to express $\varrho(y)$ as
-\begin{equation*}
-	\varrho(y) = \lim_{h \to 0} \int_{[0,1]^d} k_h(f(\vx),y) \,  \dif \vx,
-\end{equation*}
-where $\{k_h : h >0\}$ is a set of density kernels that approaches a Dirac delta function as $h \to 0$.  While $\displaystyle g \mapsto \int_{[0,1]^d} g(\vx) \, \dif \vx$ is a linear functional, the presence of a limit in the expression above complicates matters.
 
-Alternatively, one might write the probability density as a derivative of the cumulative distribution function:
-\begin{equation*}
-	\varrho(y) = \left . \frac{\dif}{\dif z} \int_{[0,1]^d} \bbone_{(-\infty,z)}(f(\vx))\,  \dif \vx \right \rvert_{z = y}.
-\end{equation*}
-However, the integrand $\bbone_{(-\infty,z)}(f(\cdot))$, does not have the smoothness properties desired for an analysis using low discrepancy sequences. Indeed, the kernel density estimate succeeds by essentially replacing a function with jump discontinuities, $\bbone_{(-\infty,z)}(f(\cdot))$, by a smoothed version and then pulling the derivative inside the integral.
+%% STOPPED HERE
 
-
-\end{document}
-
-\section{Stationary Density Kernels}
+\section{Stationary $k$ and $\KY$}
 
 Returning to the error analysis of the kernel density estimator, we first consider the simpler case of stationary density kernels.  Suppose that $k(z,y) = h^{-1}\tk((z-y)/h)$ where $h$ is a bandwidth. We also assume for simplicity that $\tk$ is an even function.
 
@@ -216,7 +203,7 @@ Taking $\tk$ to be a linear combination of the first $r$ even Hermite polynomial
 	r &= 2 & \tk(y) & = \frac{\left(4 y^{4} - 20 y^{2} + 15\right) \exp(- y^{2})}{8 \sqrt{\pi}}
 \end{align*}
 
-
+\end{document}
 
 \section{Error in Estimating the Smoothed Density with Tensor Product Kernels}\label{sec:errsmthdens}
 Now we look at the second part of the error namely, $	\abs{\hvarrho(y,\varrho,k) - \hvarrho(y,\varrho_{\vy},k)}$.  We also assume that $\KX$ is of tensor product form, namely,
