@@ -126,17 +126,18 @@ where
 \end{align*}
 Here, the discrepancy, $\disc(\mX,\KX)$ measures the quality of the design, $\mX$, and $\norm[\KX]{k(f(\cdot),y) }$ measures of the peakiness or roughness of the smoothing kernel composed with $f$, the function defining the random variable of interest.
 
-To summarize the argument above we have the following theorem.
+The argument above is summarized in the theorem below.  This error bound highlights the quantities that we should optimize to make the error as small as possible.
 \begin{theorem}\label{thm:errbd} The error of the KDE is bounded as
 	\begin{equation}
 			\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} \le \smooth(k,\KY) \norm[\KY]{\varrho} + \disc(\mX,\KX) \norm[\KX]{k(f(\cdot),y)}.
 	\end{equation}
 \end{theorem}
-A KDE for general $f$ and corresponding $\varrho$, should
+A good KDE should apply to a wide range of  functions, $f$, which defined $Y$ and a corresponding wide range of probability densities, $\varrho$.  Therefore, our choices should involve
 \begin{itemize}
-	\item Choose $k$ to make $\smooth(k,\KY)$ small enough without making $\norm[\KX]{k(f(\cdot),y)}$ too large, and
-	\item Choose $\mX$ to make the discrepancy small.
+	\item  Smoothing kernel $k$, which makes $\smooth(k,\KY)$ small enough without making $\norm[\KX]{k(f(\cdot),y)}$ too large, and
+	\item Design $\mX$, which makes the discrepancy small.
 \end{itemize}
+These choices will depend on the assumptions inherent in our choices of reproducing kernels $\KY$ and $\KX$, but the error in \cref{thm:errbd} illuminates the effects of these choices.
 
 
 %% STOPPED HERE
