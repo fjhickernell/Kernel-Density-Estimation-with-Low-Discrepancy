@@ -32,6 +32,7 @@
 
 \newcommand{\AGSNote}[1]{{\color{cyan} #1}}
 \newcommand{\FJHNote}[1]{{\color{blue} #1}}
+\newenvironment{Problem}{\LARGE \color{red} Problem:  }{\normalsize \color{black}}
 
 \begin{document}
 \title{Kernel Density Estimation Using Low Discrepancy Sampling}
@@ -84,7 +85,7 @@ The first term on the right above is the error in approximating the true density
 
 
 
-\section{Error Analysis}\label{sec:error_analysis}
+\section{Error Analysis via Reproducing Kernel Hilbert Spaces}\label{sec:error_analysis}
 Bounding the error of the KDE in terms of the sum of two terms facilitates the error analysis for the following reason:
 \begin{itemize}
 	\item The first term can be bounded in terms of the choice of smoothing kernel, $k$, by assuming that $\varrho$ lies in a Hilbert space with reproducing kernel $\KY:\reals \times \reals \to \reals$.
@@ -146,9 +147,9 @@ These choices will depend on the assumptions inherent in our choices of reproduc
 
 Returning to the error analysis of the kernel density estimator, we first consider the simpler case of stationary density kernels.  Suppose that $k(z,y) = h^{-1}\tk((z-y)/h)$ where $h$ is a bandwidth. We also assume for simplicity that $\tk$ is an even function.
 
-Morever, assume that the reproducing kernel $\KY$ is also stationary, i.e., $\KY(y,z) = \tKY(y-z)$. This means that the density of the random variable $Y$ and the density of $Y$ plus any constant have the same norm in the Hilbert space defined by $\KY$.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written in terms of integrals involving the reproducing kernel and density kernel:
+\subsection{Bounding the Smoothness} Morever, assume that the reproducing kernel $\KY$ is also stationary, i.e., $\KY(y,z) = \tKY(y-z)$. This means that the density of the random variable $Y$ and the density of $Y$ plus any constant have the same norm in the Hilbert space defined by $\KY$.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written in terms of integrals involving the reproducing kernel and density kernel:
 \begin{align*}
-	\MoveEqLeft{\norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2} \\
+	\smooth^2(k,\KY) & = \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2 \\
 	&=  \tKY(0) -  \frac 2h \int_{-\infty}^{\infty} \tk((z-y)/h) \, \tKY(z-y) \, \dif z \\
 	& \qquad \qquad + \frac 1{h^2} \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  \tk((z-y)/h)  \, \tKY(z-t) \, \tk((t-y)/h) \, \dif z \, \dif t \\
 	&=   \tKY(0) - 2 \int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w \\
@@ -183,7 +184,34 @@ then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(
 	& =  \frac{2h^{2r+3}}{(2r+2)!} \int_{0}^{\infty}  \ttk(v) \, \tKY^{(2r+2)}(hv) \,  v^{2r+2}    \, \dif v \\
 	&  \le  \frac{2h^{2r+3}}{(2r+2)!}  \norm[\infty]{\tKY^{(2r+2)}} \int_{0}^{\infty}  \abs{\ttk(v)}  \,  v^{2r+2}    \, \dif v \\
 \end{align*}
-using the substitution $v = z/h$.
+using the substitution $v = z/h$.  Thus, 
+\[
+- 2 \int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w  = -2\tKY(0) + \Order(h^{2r+3}).
+\]
+this term is $\Order(h^{2r+3})$
+
+\begin{Problem}
+    Can we also show that 
+    \[
+    \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  \tk(w) \, \tKY(h(w-v)) \, \tk(v)\, \dif w \, \dif v = \tKY(0) + \Order(h^{2r+3}),
+    \]
+    which would mean that $\smooth^2(k,\KY) =\Order(h^{2r+3}) $?
+\end{Problem}
+
+\subsection{Bounding the Discrepancy}
+We already know that the discrepancy is $\Order(n^{-1+\delta})$ for all $\delta > 0$
+
+
+\subsection{Bounding the Variation}
+For certain reproducing kernels $\KX$, we can write down a formula for the norm, $\norm[\KX]{\cdot}$.  For example, for the weighted centered discrepancy, we have 
+\begin{equation*}
+    \KX(\vt,\vx) = \prod_{j=1}^d \Bigl\{1 + \frac{\gamma_j^2}{2}[\abs{t_j -1/2} + \abs{x_j-1/2} - \abs{t_j  - x_j}] \Bigr\}
+\end{equation*}
+where $\{\gamma_j\}_{j=1}^d$ are coordinate weights.
+\begin{align*}
+    \norm[\KX]{g}^2 = \sum_{\emptyset \ne \fu \subseteq \{1, \ldots, d\}} 
+\end{align*}
+
 
 \section{Hermite Function Density Kernels}
 
