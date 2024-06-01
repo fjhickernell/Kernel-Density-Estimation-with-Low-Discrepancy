@@ -117,7 +117,7 @@ where the part of the error bound depending on the density kernel can be rewritt
 \nonumber
 &=  \KY(y,y) - 2 \int_{-\infty}^{\infty} k(z,y) \, \KY(z,y) \, \dif z  + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  k(z,y) \, \KY(z,t) \, k(t,y)\, \dif z \, \dif t.
 \end{align}
-With additional assumptions about the form of the smoothing kernel, it is possible to analyze how quickly this term vanishes as the smoothing kernel becomes more peaked.
+See \cref{app:rkhs} for an explanation of this derivation.  With additional assumptions about the form of the smoothing kernel, it is possible to analyze how quickly this term vanishes as the smoothing kernel becomes more peaked.
 
 Under the second bulleted assumption above, the second term on the right in \eqref{eq:KDEerrassumA} can also be bounded:
 \begin{align}
@@ -230,12 +230,13 @@ where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite{Hic97a,Hic98b}.
 \begin{Problem} [Before the previous problem, easier]
 We know that the mean square error of integration using independent and identically distributed (IID) sampling is
 \begin{equation*}
-    \frac{\var(\tk((y - f(\cdot))/h)/h)}{n} =  \frac{\var(\tk((y - f(\cdot))/h))}{h^2 n},
+    \frac{\var\bigl(\tk((y - f(\cdot))/h)/h\bigr)}{n} =  \frac{\var\bigl(\tk((y - f(\cdot))/h)\bigr)}{h^2 n},
 \end{equation*}
 where the variance of a function defined on $[0,1]^d$ in this case is defined as
 \begin{equation*}
 \var(g) = \int_{[0,1]^d} [g(\vx)]^2 \, \dif \vx - \Biggl[ \int_{[0,1]^d} g(\vx) \, \dif \vx  \Biggr]^2.
 \end{equation*}
+See \cref{app:MSE} for a derivation.
 Can we bound or analyze $ \var(\tk((y - f(\cdot))/h))/(h^2n)$ as $h \to 0$?  Taylor series might help.
 \end{Problem}
 
@@ -272,7 +273,7 @@ Taking $\tk$ to be a linear combination of the first $r$ even Hermite polynomial
 
 \appendix
 
-\section{The Reproducing Kernel Hilbert Space Trick}
+\section{The Reproducing Kernel Hilbert Space Trick} \label{app:rkhs}
 A Hilbert space, $\ch$, is a vector space with an inner product, $\ip{\cdot}{\cdot}$ that is complete under the norm induced by the inner product.  A reproducing kernel Hilbert space \cite{RKHSwiki} is a Hilbert space of functions on a domain $\Omega$ with a kernel, $K:\Omega \times \Omega \to \reals$, such that function evaluation is a bounded linear functional, and
 \begin{equation} \label{eq:repproperty}
     f(y) = \ip{K(\cdot,y)}{f} \qquad \forall y \in \Omega.
@@ -318,8 +319,23 @@ This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ 
 \end{align*}
 This completes the derivation of \eqref{eq:kquality}.
 
+\section{Mean Squared Error Under IID Sampling} \label{app:MSE}
+Let $Y$ be a random variable with mean $\mu :=  \Ex(Y)$ and variance $\var(Y) = \Ex[(Y - \mu)^2] = \Ex(Y^2) - \mu^2$.  Let $Y_1, Y_2, \ldots$ be independent and identically distributed (IID) instances of $Y$, and denote the sample mean by $\hmu_n = n^{-1} \sum_{i=1}^n Y_i$.  Note that $\Ex(\hmu_n) = \mu$.  Then the mean square error in approximating the population (true) mean by the sample mean is 
+\begin{equation*}
+    \Ex[(\mu - \hmu_n)]^2  =  \var(\hmu_n) = \var \left (\frac{1}{n} \sum_{i=1}^n Y_i \right) \underbrace{=}_{\text{since the $Y_i$ are IID}} \frac 1{n^2} \sum_{i=1}^n \var(Y_i) = \frac{\var(Y)}{n}
+\end{equation*}
 
-
+If $Y = g\vX)$ for $\vX \sim \cu[0,1]^d$, then 
+\begin{gather*}
+    \mu = \Ex(Y) = \Ex[g(\vX)]  = \int_{[0,1]^d} g(\vx) \, \dif \vx, \\ 
+    \var(Y) = \var\bigl(g(\vX)\bigr) = \Ex\{[g(\vX)]^2\} - \{\Ex[g(\vX)]\}^2 = \int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx - 
+    \left[\int_{[0,1]^d} g(\vx) \, \dif \vx\right]^2.
+\end{gather*}
+Thus, the mean squared error is 
+\[
+\frac 1n  \left\{\int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx - 
+    \left[\int_{[0,1]^d} g(\vx) \, \dif \vx\right]^2 \right\}.
+\]
 
 \end{document}
 
