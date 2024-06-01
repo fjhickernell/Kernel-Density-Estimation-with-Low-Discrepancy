@@ -32,11 +32,18 @@
 
 \newcommand{\AGSNote}[1]{{\color{cyan} #1}}
 \newcommand{\FJHNote}[1]{{\color{blue} #1}}
-\newenvironment{Problem}{\LARGE \color{red} Problem:  }{\normalsize \color{black}}
+\newcounter{probcnt}
+\setcounter{probcnt}{0}
+\newenvironment{Problem}{\bigskip \LARGE \color{red} \refstepcounter{probcnt} \noindent Problem \theprobcnt. }{\normalsize \color{black} \bigskip}
 
 \begin{document}
 \title{Kernel Density Estimation Using Low Discrepancy Sampling}
 \author{Fred J. Hickernell}
+\author{Guillem}
+\author{Aiwen Li}
+\author{Luke}
+\author{Brooke Feinberg}
+\author{Richard Varela}
 \begin{abstract} Coming soon
 \end{abstract}
 
@@ -45,6 +52,8 @@
 \section{The Problem} \label{sec:problem}
 
 Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,1]^d \to \reals$.  Low discrepancy sequences, $\{\vx_1, \vx_2, \ldots \}$, are used for accurately approximating  the population mean, $\mu = \Ex(Y)$, by the sample mean, $\hmu = n^{-1} \sum_{i=1}^n f(\vx_i)$.   Can low discrepancy (LD) sequences be used for estimating the density of $Y$ well?
+
+See \cite{DicEtal14a} for a tutorial on methods of low discrepancy sequences.
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
 Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the \emph{design}, i.e., the $n \times d$ matrix formed from the data sites, $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  as
@@ -83,7 +92,7 @@ and $F_{\mathrm{unif}}$ denotes the uniform distribution function over the unit 
 \end{equation}
 The first term on the right above is the error in approximating the true density by the smoothed density.  It can be made smaller by choosing $k(\cdot,y)$ to approximate the Dirac delta generalized function $\delta(\cdot - y)$.  The second term on the right in  \eqref{eq:KDEerrassum} is the error in approximating the integral defining the smoothed density by a cubature defined in terms of the design, $\mX$.  Choosing a peaky $k(\cdot,y)$  will tend to make this term large.  The error analysis in the following sections explains how to optimize the choice of the smoothing kernel, $k$, in light of this trade-off.
 
-
+Related work on QMC for density estimation has been done by \cite{AbdEtal21a,GilKuoSlo23a,LEcPuc20a,LEcuyer2022b}.
 
 \section{Error Analysis via Reproducing Kernel Hilbert Spaces}\label{sec:error_analysis}
 Bounding the error of the KDE in terms of the sum of two terms facilitates the error analysis for the following reason:
@@ -147,7 +156,7 @@ These choices will depend on the assumptions inherent in our choices of reproduc
 
 Returning to the error analysis of the kernel density estimator, we first consider the simpler case of stationary density kernels.  Suppose that $k(z,y) = h^{-1}\tk((z-y)/h)$ where $h$ is a bandwidth. We also assume for simplicity that $\tk$ is an even function.
 
-\subsection{Bounding the Smoothness} Morever, assume that the reproducing kernel $\KY$ is also stationary, i.e., $\KY(y,z) = \tKY(y-z)$. This means that the density of the random variable $Y$ and the density of $Y$ plus any constant have the same norm in the Hilbert space defined by $\KY$.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written in terms of integrals involving the reproducing kernel and density kernel:
+\subsection{Bounding the Smoothing} Morever, assume that the reproducing kernel $\KY$ is also stationary, i.e., $\KY(y,z) = \tKY(y-z)$. This means that the density of the random variable $Y$ and the density of $Y$ plus any constant have the same norm in the Hilbert space defined by $\KY$.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written in terms of integrals involving the reproducing kernel and density kernel:
 \begin{align*}
 	\smooth^2(k,\KY) & = \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2 \\
 	&=  \tKY(0) -  \frac 2h \int_{-\infty}^{\infty} \tk((z-y)/h) \, \tKY(z-y) \, \dif z \\
@@ -190,7 +199,7 @@ using the substitution $v = z/h$.  Thus,
 \]
 this term is $\Order(h^{2r+3})$
 
-\begin{Problem}
+\begin{Problem} [Easier]
     Can we also show that 
     \[
     \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  \tk(w) \, \tKY(h(w-v)) \, \tk(v)\, \dif w \, \dif v = \tKY(0) + \Order(h^{2r+3}),
@@ -198,19 +207,45 @@ this term is $\Order(h^{2r+3})$
     which would mean that $\smooth^2(k,\KY) =\Order(h^{2r+3}) $?
 \end{Problem}
 
-\subsection{Bounding the Discrepancy}
-We already know that the discrepancy is $\Order(n^{-1+\delta})$ for all $\delta > 0$
-
-
 \subsection{Bounding the Variation}
 For certain reproducing kernels $\KX$, we can write down a formula for the norm, $\norm[\KX]{\cdot}$.  For example, for the weighted centered discrepancy, we have 
 \begin{equation*}
     \KX(\vt,\vx) = \prod_{j=1}^d \Bigl\{1 + \frac{\gamma_j^2}{2}[\abs{t_j -1/2} + \abs{x_j-1/2} - \abs{t_j  - x_j}] \Bigr\}
 \end{equation*}
-where $\{\gamma_j\}_{j=1}^d$ are coordinate weights.
+where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite{Hic97a,Hic98b}.
 \begin{align*}
     \norm[\KX]{g}^2 = \sum_{\emptyset \ne \fu \subseteq \{1, \ldots, d\}} 
+    \prod_{j \in \fu} \frac{1}{\gamma_j^2}
+    \int_{[0,1]^{\Bar{\fu}}} \abs{ \left . \frac{\partial^{\abs{\fu}}g}{\partial \vx_{\fu}} \right \rvert_{\vx_{\fu} = (1/2, \ldots, 1/2)}}^2 \, \dif \vx_{\bar{\fu}}, \qquad \bar{\fu} := \{1, \ldots, d\} \setminus \fu
 \end{align*}
+
+\begin{Problem} [Harder]
+    We want to analyze how 
+    \[
+    \norm[\KX]{k\bigl(f(\cdot),y\bigr)} = \norm[\KX]{\tk\bigl((y - f(\cdot))/h\bigr)/h}
+    \]
+    grows as $h$ decreases.  How does this depend on the coordinate weights?
+\end{Problem}
+
+\begin{Problem} [Before the previous problem, easier]
+We know that the mean square error of integration using independent and identically distributed (IID) sampling is
+\begin{equation*}
+    \frac{\var(\tk((y - f(\cdot))/h)/h)}{n} =  \frac{\var(\tk((y - f(\cdot))/h))}{h^2 n},
+\end{equation*}
+where the variance of a function defined on $[0,1]^d$ in this case is defined as
+\begin{equation*}
+\var(g) = \int_{[0,1]^d} [g(\vx)]^2 \, \dif \vx - \Biggl[ \int_{[0,1]^d} g(\vx) \, \dif \vx  \Biggr]^2.
+\end{equation*}
+Can we bound or analyze $ \var(\tk((y - f(\cdot))/h))/(h^2n)$ as $h \to 0$?  Taylor series might help.
+\end{Problem}
+
+\subsection{Bounding the Discrepancy}
+We already know that the discrepancy is $\Order(n^{-1+\delta})$ for all $\delta > 0$.
+
+\begin{Problem} [Later]
+    After we solve the previous problem, we need to see how to optimally choose the coordinate weights with respect to $h$ to keep this small.
+\end{Problem}
+
 
 
 \section{Hermite Function Density Kernels}
@@ -231,6 +266,60 @@ Taking $\tk$ to be a linear combination of the first $r$ even Hermite polynomial
 	r& = 1 &  \tk(y) & =\frac{\left(3 - 2y^{2}\right) \exp(- y^{2})}{2\sqrt{\pi}} \\
 	r &= 2 & \tk(y) & = \frac{\left(4 y^{4} - 20 y^{2} + 15\right) \exp(- y^{2})}{8 \sqrt{\pi}}
 \end{align*}
+
+\bibliographystyle{amsplain}
+\bibliography{FJH23,FJHown23}
+
+\appendix
+
+\section{The Reproducing Kernel Hilbert Space Trick}
+A Hilbert space, $\ch$, is a vector space with an inner product, $\ip{\cdot}{\cdot}$ that is complete under the norm induced by the inner product.  A reproducing kernel Hilbert space \cite{RKHSwiki} is a Hilbert space of functions on a domain $\Omega$ with a kernel, $K:\Omega \times \Omega \to \reals$, such that function evaluation is a bounded linear functional, and
+\begin{equation} \label{eq:repproperty}
+    f(y) = \ip{K(\cdot,y)}{f} \qquad \forall y \in \Omega.
+\end{equation}
+Note that as a consequence of assuming $K(\cdot,y) \in \ch$ for all $y\in \ch$, it follows that
+\begin{equation} \label{eq:rkip}
+    \ip{K(\cdot,y}{K(\cdot, z)} = K(y,z) \qquad \forall y,z \in \Omega.
+\end{equation}
+
+The Riesz representation theorem \cite{RieszWiki} states that any bounded/continuous linear functional $L:\ch \to \reals$ can be expressed as an inner product
+\begin{equation}\label{eq:RTT}
+L(f) = \ip{g}{f} \qquad \forall f \in \ch,
+\end{equation}
+where the representer, $g \in \ch$, is uniquely determined by $L$.  This is true for all Hilbert spaces, but the theorem does not tell one how to construct the representer.
+
+Combining \eqref{eq:repproperty} and \eqref{eq:RTT} provides a formula for the representer in terms of the linear functional, $L$, applied to the reproducing kernel, $K$.  Note that
+\begin{equation} \label{eq:repformula}
+    g(y) \underbrace{=}_{\text{by \eqref{eq:repproperty}}} \ip{K(\cdot, y)}{g} 
+    \underbrace{=}_{\text{by \eqref{eq:RTT}}} L(K(\cdot,y)) .
+\end{equation}
+
+Now we illustrate how to use \eqref{eq:repformula} to derive \eqref{eq:firstbd}.  Note that $L: \varrho \mapsto \varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z$ is a bounded linear functional.  Let $g$ denote its representer.  Then by the Cauchy-Scwhartz inequality \cite{CauchySchwarzWiki}, it follows that 
+\begin{equation}
+    \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z} = \abs{L(\varrho)} = \abs{\ip{g}{\varrho}} \le \norm{g}\norm{\varrho}
+\end{equation}
+This looks like  \eqref{eq:firstbd}, except that we need the formula for $\norm{g}$ as in \eqref{eq:kquality}.  
+
+This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ is in the Hilbert space defined by the reproducing kernel $\KY$
+\begin{align*}
+    g(w) &= L(\KY(\cdot,w)) \qquad \forall w \in \reals \\
+    & = \KY(y,w) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,w) \, \dif z \qquad \forall w \in \reals, \\
+    \norm{g}^2 &= \ip{g}{g} \\
+    & = \ip{\KY(y\cdot) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}{\KY(y,\cdot) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \\
+    & = \ip{\KY(y,\cdot)}{\KY(y,\cdot)} 
+      - 2 \ip{\KY(y,\cdot)}{\int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \\
+     & \qquad \qquad   + \ip{\int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}{\int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \\
+    & = \KY(y,y)
+      - 2 \int_{-\infty}^{\infty} k(z,y) \, \ip{\KY(y,\cdot)}{\KY(z,\cdot)} \, \dif z \\
+    & \qquad \qquad   + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} k(z,y) k(w,y) \, \ip{ \KY(z,\cdot)}{\KY(w,\cdot)} \,  \dif z\dif w \\
+   & = \KY(y,y)
+      - 2 \int_{-\infty}^{\infty} k(z,y) \, \KY(y,z) \, \dif z
+     + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} k(z,y) k(w,y) \, \KY(z,w)\KY(w,\cdot) \,  \dif z\dif w.
+\end{align*}
+This completes the derivation of \eqref{eq:kquality}.
+
+
+
 
 \end{document}
 
