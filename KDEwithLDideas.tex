@@ -197,7 +197,6 @@ using the substitution $v = z/h$.  Thus,
 \[
 - 2 \int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w  = -2\tKY(0) + \Order(h^{2r+3}).
 \]
-this term is $\Order(h^{2r+3})$
 
 \begin{Problem} [Easier]
     Can we also show that 
@@ -317,6 +316,7 @@ This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ 
       - 2 \int_{-\infty}^{\infty} k(z,y) \, \KY(y,z) \, \dif z
      + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} k(z,y) k(w,y) \, \KY(z,w)\KY(w,\cdot) \,  \dif z\dif w.
 \end{align*}
+%Luke Bielawski - I believe there is a typo in the last double integral. The last $\KY(w, \cdot)$$ shouldn't be there as $\ip{ \KY(z,\cdot)}{\KY(w,\cdot)}$ should just be $\KY(z, w)$ with no extra term
 This completes the derivation of \eqref{eq:kquality}.
 
 \section{Mean Squared Error Under IID Sampling} \label{app:MSE}
