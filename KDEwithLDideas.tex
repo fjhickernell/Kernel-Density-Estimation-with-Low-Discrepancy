@@ -258,19 +258,23 @@ For certain reproducing kernels $\KX$, we can write down a formula for the norm,
 \begin{equation*}
     \KX(\vt,\vx) = \prod_{j=1}^d \Bigl\{1 + \frac{\gamma_j^2}{2}[\abs{t_j -1/2} + \abs{x_j-1/2} - \abs{t_j  - x_j}] \Bigr\}
 \end{equation*}
-where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite{Hic97a,Hic98b}.
+where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite[Eq.\ (31)]{Hic99b}.  The norm related to this reproducing kernel is 
 \begin{align*}
     \norm[\KX]{g}^2 = \sum_{\emptyset \ne \fu \subseteq \{1, \ldots, d\}} 
     \prod_{j \in \fu} \frac{1}{\gamma_j^2}
     \int_{[0,1]^{\Bar{\fu}}} \abs{ \left . \frac{\partial^{\abs{\fu}}g}{\partial \vx_{\fu}} \right \rvert_{\vx_{\fu} = (1/2, \ldots, 1/2)}}^2 \, \dif \vx_{\bar{\fu}}, \qquad \bar{\fu} := \{1, \ldots, d\} \setminus \fu
 \end{align*}
 
+
+
 \begin{Problem} [Harder]
     We want to analyze how 
     \[
     \norm[\KX]{k\bigl(f(\cdot),y\bigr)} = \norm[\KX]{\tk\bigl((y - f(\cdot))/h\bigr)/h}
     \]
-    grows as $h$ decreases.  How does this depend on the coordinate weights?
+    grows as $h$ decreases.  How does this depend on the coordinate weights?  
+    
+    We may try following the argument in \cite[Proposition 4.1]{AbdEtal21a}, where no coordinate weights are used.
 \end{Problem}
 
 \begin{Problem} [Before the previous problem, easier]
