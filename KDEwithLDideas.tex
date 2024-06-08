@@ -6,6 +6,7 @@
 \usepackage{bbm}
 \usepackage[capitalise]{cleveref}
 \usepackage[margin=2.5cm]{geometry}
+% \usepackage{marginpar}
 \input{FJHDef.tex}
 
 \newtheorem{theorem}{Theorem}
@@ -32,6 +33,7 @@
 
 \newcommand{\AGSNote}[1]{{\color{cyan} #1}}
 \newcommand{\FJHNote}[1]{{\color{blue} #1}}
+\newcommand{\AiwenNote}[1]{{\color{green} #1}}
 \newcounter{probcnt}
 \setcounter{probcnt}{0}
 \newenvironment{Problem}{\bigskip \LARGE \color{red} \refstepcounter{probcnt} \noindent Problem \theprobcnt. }{\normalsize \color{black} \bigskip}
@@ -44,6 +46,7 @@
 \author{Luke}
 \author{Brooke Feinberg}
 \author{Richard Varela}
+\author{Aadit Jain}
 \begin{abstract} Coming soon
 \end{abstract}
 
@@ -208,6 +211,7 @@ using the substitution $v = z/h$.  Thus,
 
 
 \textbf{Attempted Solution (Luke Bielawski)}
+\marginpar{Your comments welcome}
 We want to show that 
 \[
 \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tKY(h(w-v)) \tk(v) \, \dif w \, \dif v = \tilde{K_y}(0) + \Order(h^{2r+3})
@@ -288,10 +292,10 @@ Maybe an easier version is to consider
 where 
 \begin{align*}
 \var\bigl(\tk((y - Y)/h)\bigr) &= \int_{-\infty}^{\infty} [\tk((y - z)/h)]^2\, \varrho(z) \, \dif z - \left[ \int_{-\infty}^{\infty} \tk((y - z)/h)\, \varrho(z) \, \dif z \right]^2 \\
-&= h \int_{-\infty}^{\infty} [\tk(w)]^2\, \varrho(y + wh) \, \dif w - \left[ h \int_{-\infty}^{\infty} \tk(w)\, \varrho(y + wh) \, \dif z \right]^2 \\
+&= h \int_{-\infty}^{\infty} [\tk(w)]^2\, \varrho(y + wh) \, \dif w - \left[ h \int_{-\infty}^{\infty} \tk(w)\, \varrho(y + wh) \, \dif w \right]^2 \\
 & \qquad \qquad \text{where }w = (z - y)/h, \ z = y + wh
 \end{align*}
-
+%Luke Bielawski - the differential in the last integral should be dw, not dz. I have enacted this change.
 
 \end{Problem}
 
@@ -335,7 +339,7 @@ A Hilbert space, $\ch$, is a vector space with an inner product, $\ip{\cdot}{\cd
 \end{equation}
 Note that as a consequence of assuming $K(\cdot,y) \in \ch$ for all $y\in \ch$, it follows that
 \begin{equation} \label{eq:rkip}
-    \ip{K(\cdot,y}{K(\cdot, z)} = K(y,z) \qquad \forall y,z \in \Omega.
+    \ip{K(\cdot,y)}{K(\cdot, z)} = K(y,z) \qquad \forall y,z \in \Omega.
 \end{equation}
 
 The Riesz representation theorem \cite{RieszWiki} states that any bounded/continuous linear functional $L:\ch \to \reals$ can be expressed as an inner product
@@ -372,7 +376,7 @@ This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ 
       - 2 \int_{-\infty}^{\infty} k(z,y) \, \KY(y,z) \, \dif z
      + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} k(z,y) k(w,y) \, \KY(z,w)\KY(w,\cdot) \,  \dif z\dif w.
 \end{align*}
-%Luke Bielawski - I believe there is a typo in the last double integral. The last $\KY(w, \cdot)$$ shouldn't be there as $\ip{ \KY(z,\cdot)}{\KY(w,\cdot)}$ should just be $\KY(z, w)$ with no extra term
+%Luke Bielawski - I believe there is a typo in the last double integral. The last $\KY(w, \cdot)$$ shouldn't be there as $\ip{ \KY(z,\cdot)}{\KY(w,\cdot)}$ should just be $\KY(z, w)$ with no extra term.
 This completes the derivation of \eqref{eq:kquality}.
 
 \section{Mean Squared Error Under IID Sampling} \label{app:MSE}
@@ -381,7 +385,7 @@ Let $Y$ be a random variable with mean $\mu :=  \Ex(Y)$ and variance $\var(Y) = 
     \Ex[(\mu - \hmu_n)]^2  =  \var(\hmu_n) = \var \left (\frac{1}{n} \sum_{i=1}^n Y_i \right) \underbrace{=}_{\text{since the $Y_i$ are IID}} \frac 1{n^2} \sum_{i=1}^n \var(Y_i) = \frac{\var(Y)}{n}
 \end{equation*}
 
-If $Y = g\vX)$ for $\vX \sim \cu[0,1]^d$, then 
+If $Y = g(\vX)$ for $\vX \sim \cu[0,1]^d$, then 
 \begin{gather*}
     \mu = \Ex(Y) = \Ex[g(\vX)]  = \int_{[0,1]^d} g(\vx) \, \dif \vx, \\ 
     \var(Y) = \var\bigl(g(\vX)\bigr) = \Ex\{[g(\vX)]^2\} - \{\Ex[g(\vX)]\}^2 = \int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx - 
