@@ -59,7 +59,7 @@ Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,
 See \cite{DicEtal14a} for a tutorial on methods of low discrepancy sequences.
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
-Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the \emph{design}, i.e., the $n \times d$ matrix formed from the data sites, $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  as
+Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the \emph{design}, i.e., the $n \times d$ matrix formed from the data sites, $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  in terms of a Riemann-Stieltjes integral, or equivalently, a sum:
 \begin{equation} \label{eq:kdedef}
 	\hvarrho(y,F_{\vy},k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F_{\vy}(z)  = \frac 1n \sum_{i=1}^n k(y_i,y) \\
 	= \frac 1n \sum_{i=1}^n k(f(\vx_i),y) = \int_{[0,1]^d} k(f(\vx),y) \, \dif F_\mX(\vx),
@@ -71,8 +71,17 @@ where $k:\reals \times \reals \to \reals$ is called a \emph{smoothing kernel}.  
 \end{equation}
 This implies that each datum, $y_i$, is given a weight of unity that is spread over the real line.  Consequently, $\int_{-\infty}^{\infty} \hvarrho(y,F_{\vy},k) \, dy = 1$.  If $k$ is non-negative, then the KDE, $\hvarrho(\cdot,F_{\vy},k)$, is non-negative, and so a true probability density.  But, we do not necessarily assume that $k$ is non-negative.
 
+If the design, $\mX$, is chosen to be IID, in which case, $\vy$ is a vector of IID elements, then the expected KDE is a \emph{smoothed density}, i.e., $\Ex[\hvarrho(y,F_{\vy},k)] = \hvarrho(y,F,k)$, where
+\begin{multline}
+	\label{eq:smoothdens}
+	\hvarrho(y,F,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F(z)
+	= \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z \\
+	= \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx
+	= \int_{[0,1]^d} k(f(\vx),y) \,  \dif F_{\mathrm{unif}}(\vx),
+\end{multline}
+Of course, for designs $\mX$ chosen to be LD, this is not the case, although one expects $\hvarrho(y,F_{\vy},k)$ to tend to $\hvarrho(y,F,k)$ as $n \to \infty$.
 
-The error in approximating the density at a point by the KDE, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, can be bounded in terms of a sum of two terms:
+The error in approximating the density at a point by the KDE, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, can be bounded in terms of a sum of two terms involving the smoothed density:
 \begin{align}
 	\label{eq:KDEerrassum}
 	\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} & =
@@ -80,15 +89,7 @@ The error in approximating the density at a point by the KDE, $\abs{\varrho(y) -
 	\nonumber
 	& \le  \abs{\varrho(y) - \hvarrho(y,F,k)} + \abs{\hvarrho(y,F,k) - \hvarrho(y,F_{\vy},k)},
 \end{align}
-where the smoothing kernel, $k$, defines a \emph{smoothed density}:
-\begin{multline}
-	\label{eq:smoothdens}
-\hvarrho(y,F,k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F(z)
-= \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z \\
-= \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx
- = \int_{[0,1]^d} k(f(\vx),y) \,  \dif F_{\mathrm{unif}}(\vx),
-\end{multline}
-and $F_{\mathrm{unif}}$ denotes the uniform distribution function over the unit cube.  Then \eqref{eq:kdedef} and \eqref{eq:smoothdens} can be used to express the error bound in \eqref{eq:KDEerrassum} as
+where $F_{\mathrm{unif}}$ denotes the uniform distribution function over the unit cube.  Then \eqref{eq:kdedef} and \eqref{eq:smoothdens} can be used to express the error bound in \eqref{eq:KDEerrassum} as
 \begin{equation}
 	\label{eq:KDEerrassumA}
 	\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)} \le \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z } + \abs{\int_{[0,1]^d} k(f(\vx),y) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)},
@@ -196,13 +197,13 @@ then the first term on the right side of \eqref{eq:isomidterm} reduces to $\tKY(
 	& =  \frac{2h^{2r+3}}{(2r+2)!} \int_{0}^{\infty}  \ttk(v) \, \tKY^{(2r+2)}(hv) \,  v^{2r+2}    \, \dif v \\
 	&  \le  \frac{2h^{2r+3}}{(2r+2)!}  \norm[\infty]{\tKY^{(2r+2)}} \int_{0}^{\infty}  \abs{\ttk(v)}  \,  v^{2r+2}    \, \dif v \\
 \end{align*}
-using the substitution $v = z/h$.  Thus, 
+using the substitution $v = z/h$.  Thus,
 \[
 - 2 \int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w  = -2\tKY(0) + \Order(h^{2r+3}).
 \]
 
 \begin{Problem} [Easier]
-    Can we also show that 
+    Can we also show that
     \[
     \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  \tk(w) \, \tKY(h(w-v)) \, \tk(v)\, \dif w \, \dif v = \tKY(0) + \Order(h^{2r+3}),
     \]
@@ -212,7 +213,7 @@ using the substitution $v = z/h$.  Thus,
 
 \textbf{Attempted Solution (Luke Bielawski)}
 \marginpar{Your comments welcome}
-We want to show that 
+We want to show that
 \[
 \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tKY(h(w-v)) \tk(v) \, \dif w \, \dif v = \tilde{K_y}(0) + \Order(h^{2r+3})
 \]
@@ -235,17 +236,17 @@ Similar to but weaker than the previous solution, we require
 For $l = 0$, this is just requiring that $\tk$ is normalized to 1. For odd $l$, this is immediate (up to issues of convergence), since $\tk$ is even, meaning $\tk(w)w^l$ is odd. For even $l$, this is just a weaker version of the prior requirement. Putting the pieces together, we have
 \begin{align*}
     \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tKY(h(w-v)) \tk(v) \, \dif w \, \dif v &= \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \, \sum_{l=0}^r \frac{h^{2l}}{(2l)!}\tKY^{(2l)}(0) \sum_{j=0}^{2l}\binom{2l}{i}(-1)^iw^{2l-i}v^i \, \dif w \, \dif v \\
-    &+ \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \,\left(\int_0^{w-v} \frac{1}{(2r+2)!}\tKY^{(2r+2)}(q) h^{2r+3}q^{2r+2} \,\dif q\right) \, \dif v \, \dif w 
+    &+ \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \,\left(\int_0^{w-v} \frac{1}{(2r+2)!}\tKY^{(2r+2)}(q) h^{2r+3}q^{2r+2} \,\dif q\right) \, \dif v \, \dif w
 \end{align*}
 Rearranging gives
 \begin{align*}
     \sum_{l=0}^r h^{2l}\frac{1}{(2l)!}\tKY^{(2l)}(0) \sum_{j=0}^{2l}\binom{2l}{i}(-1)^i \int_{-\infty}^\infty  \tk(v) v^i \dif v\int_{-\infty}^\infty \tk(w) w^{2l-i} \dif w \\
-    + h^{2r+3} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v} 
+    + h^{2r+3} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v}
  \tKY^{(2r+2)}(q)q^{2r+2} \dif q \, \dif w \, \dif v
 \end{align*}
-For the first expression, for $i = 1, ..., r$ the $v$-integral vanishes. For $i = r, ..., 2l$, the $w$-integral vanishes. Thus, only for $i = 2l = 0$, does this term not vanish, which gives $\tKY(0)$. For the second expression, notice that everything to the right of $h^{2r+3}$ is a constant with respect to $h$. One can concoct a more precise constant; however, I don't think its vital. Thus, let the entire expression 
+For the first expression, for $i = 1, ..., r$ the $v$-integral vanishes. For $i = r, ..., 2l$, the $w$-integral vanishes. Thus, only for $i = 2l = 0$, does this term not vanish, which gives $\tKY(0)$. For the second expression, notice that everything to the right of $h^{2r+3}$ is a constant with respect to $h$. One can concoct a more precise constant; however, I don't think its vital. Thus, let the entire expression
 \[
-C = \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v} 
+C = \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v}
  \tKY^{(2r+2)}(q)q^{2r+2} \dif q \, \dif w \, \dif v < \infty
 \]
 meaning we have
@@ -254,13 +255,13 @@ meaning we have
 \]
 as desired.
 \subsection{Bounding the Variation}
-For certain reproducing kernels $\KX$, we can write down a formula for the norm, $\norm[\KX]{\cdot}$.  For example, for the weighted centered discrepancy, we have 
+For certain reproducing kernels $\KX$, we can write down a formula for the norm, $\norm[\KX]{\cdot}$.  For example, for the weighted centered discrepancy, we have
 \begin{equation*}
     \KX(\vt,\vx) = \prod_{j=1}^d \Bigl\{1 + \frac{\gamma_j^2}{2}[\abs{t_j -1/2} + \abs{x_j-1/2} - \abs{t_j  - x_j}] \Bigr\}
 \end{equation*}
-where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite[Eq.\ (31)]{Hic99b}.  The norm related to this reproducing kernel is 
+where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite[Eq.\ (31)]{Hic99b}.  The norm related to this reproducing kernel is
 \begin{align*}
-    \norm[\KX]{g}^2 = \sum_{\emptyset \ne \fu \subseteq \{1, \ldots, d\}} 
+    \norm[\KX]{g}^2 = \sum_{\emptyset \ne \fu \subseteq \{1, \ldots, d\}}
     \prod_{j \in \fu} \frac{1}{\gamma_j^2}
     \int_{[0,1]^{\Bar{\fu}}} \abs{ \left . \frac{\partial^{\abs{\fu}}g}{\partial \vx_{\fu}} \right \rvert_{\vx_{\fu} = (1/2, \ldots, 1/2)}}^2 \, \dif \vx_{\bar{\fu}}, \qquad \bar{\fu} := \{1, \ldots, d\} \setminus \fu
 \end{align*}
@@ -268,12 +269,12 @@ where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite[Eq.\ (31)]{Hic99b}.  T
 
 
 \begin{Problem} [Harder]
-    We want to analyze how 
+    We want to analyze how
     \[
     \norm[\KX]{k\bigl(f(\cdot),y\bigr)} = \norm[\KX]{\tk\bigl((y - f(\cdot))/h\bigr)/h}
     \]
-    grows as $h$ decreases.  How does this depend on the coordinate weights?  
-    
+    grows as $h$ decreases.  How does this depend on the coordinate weights?
+
     We may try following the argument in \cite[Proposition 4.1]{AbdEtal21a}, where no coordinate weights are used.
 \end{Problem}
 
@@ -289,11 +290,11 @@ where the variance of a function defined on $[0,1]^d$ in this case is defined as
 See \cref{app:MSE} for a derivation.
 Can we bound or analyze $ \var(\tk((y - f(\cdot))/h))/(h^2n)$ as $h \to 0$?  Taylor series might help.
 
-Maybe an easier version is to consider 
+Maybe an easier version is to consider
 \begin{equation*}
     \frac{\var\bigl(\tk((y - Y)/h)/h\bigr)}{n} =  \frac{\var\bigl(\tk((y - Y)/h)\bigr)}{h^2 n},
 \end{equation*}
-where 
+where
 \begin{align*}
 \var\bigl(\tk((y - Y)/h)\bigr) &= \int_{-\infty}^{\infty} [\tk((y - z)/h)]^2\, \varrho(z) \, \dif z - \left[ \int_{-\infty}^{\infty} \tk((y - z)/h)\, \varrho(z) \, \dif z \right]^2 \\
 &= h \int_{-\infty}^{\infty} [\tk(w)]^2\, \varrho(y + wh) \, \dif w - \left[ h \int_{-\infty}^{\infty} \tk(w)\, \varrho(y + wh) \, \dif w \right]^2 \\
@@ -354,15 +355,15 @@ where the representer, $g \in \ch$, is uniquely determined by $L$.  This is true
 
 Combining \eqref{eq:repproperty} and \eqref{eq:RTT} provides a formula for the representer in terms of the linear functional, $L$, applied to the reproducing kernel, $K$.  Note that
 \begin{equation} \label{eq:repformula}
-    g(y) \underbrace{=}_{\text{by \eqref{eq:repproperty}}} \ip{K(\cdot, y)}{g} 
+    g(y) \underbrace{=}_{\text{by \eqref{eq:repproperty}}} \ip{K(\cdot, y)}{g}
     \underbrace{=}_{\text{by \eqref{eq:RTT}}} L(K(\cdot,y)) .
 \end{equation}
 
-Now we illustrate how to use \eqref{eq:repformula} to derive \eqref{eq:firstbd}.  Note that $L: \varrho \mapsto \varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z$ is a bounded linear functional.  Let $g$ denote its representer.  Then by the Cauchy-Scwhartz inequality \cite{CauchySchwarzWiki}, it follows that 
+Now we illustrate how to use \eqref{eq:repformula} to derive \eqref{eq:firstbd}.  Note that $L: \varrho \mapsto \varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z$ is a bounded linear functional.  Let $g$ denote its representer.  Then by the Cauchy-Scwhartz inequality \cite{CauchySchwarzWiki}, it follows that
 \begin{equation}
     \abs{\varrho(y) - \int_{-\infty}^{\infty} k(z,y) \, \varrho(z) \, \dif z} = \abs{L(\varrho)} = \abs{\ip{g}{\varrho}} \le \norm{g}\norm{\varrho}
 \end{equation}
-This looks like  \eqref{eq:firstbd}, except that we need the formula for $\norm{g}$ as in \eqref{eq:kquality}.  
+This looks like  \eqref{eq:firstbd}, except that we need the formula for $\norm{g}$ as in \eqref{eq:kquality}.
 
 This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ is in the Hilbert space defined by the reproducing kernel $\KY$
 \begin{align*}
@@ -370,7 +371,7 @@ This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ 
     & = \KY(y,w) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,w) \, \dif z \qquad \forall w \in \reals, \\
     \norm{g}^2 &= \ip{g}{g} \\
     & = \ip{\KY(y\cdot) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}{\KY(y,\cdot) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \\
-    & = \ip{\KY(y,\cdot)}{\KY(y,\cdot)} 
+    & = \ip{\KY(y,\cdot)}{\KY(y,\cdot)}
       - 2 \ip{\KY(y,\cdot)}{\int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \\
      & \qquad \qquad   + \ip{\int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}{\int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z} \\
     & = \KY(y,y)
@@ -384,20 +385,20 @@ This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ 
 This completes the derivation of \eqref{eq:kquality}.
 
 \section{Mean Squared Error Under IID Sampling} \label{app:MSE}
-Let $Y$ be a random variable with mean $\mu :=  \Ex(Y)$ and variance $\var(Y) = \Ex[(Y - \mu)^2] = \Ex(Y^2) - \mu^2$.  Let $Y_1, Y_2, \ldots$ be independent and identically distributed (IID) instances of $Y$, and denote the sample mean by $\hmu_n = n^{-1} \sum_{i=1}^n Y_i$.  Note that $\Ex(\hmu_n) = \mu$.  Then the mean square error in approximating the population (true) mean by the sample mean is 
+Let $Y$ be a random variable with mean $\mu :=  \Ex(Y)$ and variance $\var(Y) = \Ex[(Y - \mu)^2] = \Ex(Y^2) - \mu^2$.  Let $Y_1, Y_2, \ldots$ be independent and identically distributed (IID) instances of $Y$, and denote the sample mean by $\hmu_n = n^{-1} \sum_{i=1}^n Y_i$.  Note that $\Ex(\hmu_n) = \mu$.  Then the mean square error in approximating the population (true) mean by the sample mean is
 \begin{equation*}
     \Ex[(\mu - \hmu_n)]^2  =  \var(\hmu_n) = \var \left (\frac{1}{n} \sum_{i=1}^n Y_i \right) \underbrace{=}_{\text{since the $Y_i$ are IID}} \frac 1{n^2} \sum_{i=1}^n \var(Y_i) = \frac{\var(Y)}{n}
 \end{equation*}
 
-If $Y = g(\vX)$ for $\vX \sim \cu[0,1]^d$, then 
+If $Y = g(\vX)$ for $\vX \sim \cu[0,1]^d$, then
 \begin{gather*}
-    \mu = \Ex(Y) = \Ex[g(\vX)]  = \int_{[0,1]^d} g(\vx) \, \dif \vx, \\ 
-    \var(Y) = \var\bigl(g(\vX)\bigr) = \Ex\{[g(\vX)]^2\} - \{\Ex[g(\vX)]\}^2 = \int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx - 
+    \mu = \Ex(Y) = \Ex[g(\vX)]  = \int_{[0,1]^d} g(\vx) \, \dif \vx, \\
+    \var(Y) = \var\bigl(g(\vX)\bigr) = \Ex\{[g(\vX)]^2\} - \{\Ex[g(\vX)]\}^2 = \int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx -
     \left[\int_{[0,1]^d} g(\vx) \, \dif \vx\right]^2.
 \end{gather*}
-Thus, the mean squared error is 
+Thus, the mean squared error is
 \[
-\frac 1n  \left\{\int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx - 
+\frac 1n  \left\{\int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx -
     \left[\int_{[0,1]^d} g(\vx) \, \dif \vx\right]^2 \right\}.
 \]
 
