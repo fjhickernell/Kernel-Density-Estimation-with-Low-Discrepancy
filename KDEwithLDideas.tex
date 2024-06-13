@@ -6,6 +6,7 @@
 \usepackage{bbm}
 \usepackage[capitalise]{cleveref}
 \usepackage[margin=2.5cm]{geometry}
+\usepackage[colorinlistoftodos]{todonotes}
 % \usepackage{marginpar}
 \input{FJHDef.tex}
 
@@ -159,7 +160,7 @@ These choices will depend on the assumptions inherent in our choices of reproduc
 
 Returning to the error analysis of the kernel density estimator, we first consider the simpler case of stationary density kernels.  Suppose that $k(z,y) = h^{-1}\tk((z-y)/h)$ where $h$ is a bandwidth. We also assume for simplicity that $\tk$ is an even function.
 
-\subsection{Bounding the Smoothing} Morever, assume that the reproducing kernel $\KY$ is also stationary, i.e., $\KY(y,z) = \tKY(y-z)$. This means that the density of the random variable $Y$ and the density of $Y$ plus any constant have the same norm in the Hilbert space defined by $\KY$.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written in terms of integrals involving the reproducing kernel and density kernel:
+\subsection{Bounding the Smoothing} Moreover, assume that the reproducing kernel $\KY$ is also stationary, i.e., $\KY(y,z) = \tKY(y-z)$. This means that the density of the random variable $Y$ and the density of $Y$ plus any constant have the same norm in the Hilbert space defined by $\KY$.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written in terms of integrals involving the reproducing kernel and density kernel:
 \begin{align*}
 	\smooth^2(k,\KY) & = \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2 \\
 	&=  \tKY(0) -  \frac 2h \int_{-\infty}^{\infty} \tk((z-y)/h) \, \tKY(z-y) \, \dif z \\
@@ -228,9 +229,9 @@ We expand the left term with the binomial theorem and use the substitution $q = 
 \[
 \tKY(h(w-v)) = \sum_{l=0}^r \frac{h^{2l}}{(2l)!}\tKY^{(2l)}(0) \sum_{j=0}^{2l}\binom{2l}{i}(-1)^iw^{2l-i}v^i + \int_0^{w-v} \frac{1}{(2r+2)!}\tKY^{(2r+2)}(q) h^{2r+3}q^{2r+2} \,\dif q
 \]
-Similar to but weaker than the previous solution, we require
+We adopt the same condition as before \todo[inline]{had to change bound to $l = 0, ..., 2r$ because of error: didn't consider $i = 0, 2l$ in left binomial term}
 \[
-\int_{-\infty}^\infty \tk(w)w^l \, \dif w = \delta_{0, l} \qquad  l = 0, ..., r
+\int_{-\infty}^\infty \tk(w)w^l \, \dif w = \delta_{0, l} \qquad  l = 0, ..., 2r
 \]
 For $l = 0$, this is just requiring that $\tk$ is normalized to 1. For odd $l$, this is immediate (up to issues of convergence), since $\tk$ is even, meaning $\tk(w)w^l$ is odd. For even $l$, this is just a weaker version of the prior requirement. Putting the pieces together, we have
 \begin{align*}
@@ -239,11 +240,11 @@ For $l = 0$, this is just requiring that $\tk$ is normalized to 1. For odd $l$, 
 \end{align*}
 Rearranging gives
 \begin{align*}
-    \sum_{l=0}^r h^{2l}\frac{1}{(2l)!}\tKY^{(2l)}(0) \sum_{j=0}^{2l}\binom{2l}{i}(-1)^i \int_{-\infty}^\infty  \tk(v) v^i \dif v\int_{-\infty}^\infty \tk(w) w^{2l-i} \dif w \\
+    \sum_{l=0}^r h^{2l}\frac{1}{(2l)!}\tKY^{(2l)}(0) \sum_{i=0}^{2l}\binom{2l}{i}(-1)^i \int_{-\infty}^\infty  \tk(v) v^i \dif v\int_{-\infty}^\infty \tk(w) w^{2l-i} \dif w \\
     + h^{2r+3} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v} 
  \tKY^{(2r+2)}(q)q^{2r+2} \dif q \, \dif w \, \dif v
 \end{align*}
-For the first expression, for $i = 1, ..., r$ the $v$-integral vanishes. For $i = r, ..., 2l$, the $w$-integral vanishes. Thus, only for $i = 2l = 0$, does this term not vanish, which gives $\tKY(0)$. For the second expression, notice that everything to the right of $h^{2r+3}$ is a constant with respect to $h$. One can concoct a more precise constant; however, I don't think its vital. Thus, let the entire expression 
+For the first expression, for $i = 1, ..., 2r$, the $v$-integral vanishes. For $i = 0, ..., 2r-1$, the $w$-integral vanishes, unless $2l = 0$. Thus, only $i = l = 0$ term survives, which gives $\tKY(0)$. For the second expression, notice that everything to the right of $h^{2r+3}$ is a constant with respect to $h$. One can concoct a more precise constant; however, I don't think its vital. Thus, let the entire expression 
 \[
 C = \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v} 
  \tKY^{(2r+2)}(q)q^{2r+2} \dif q \, \dif w \, \dif v < \infty
@@ -274,7 +275,7 @@ where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite[Eq.\ (31)]{Hic99b}.  T
     \]
     grows as $h$ decreases.  How does this depend on the coordinate weights?  
     
-    We may try following the argument in \cite[Proposition 4.1]{AbdEtal21a}, where no coordinate weights are used.
+    We may try following the argument in \cite[Proposition 4.1]{AbdEtal21a}, where no coordinate weights are used.  The coordinate weights may help overcome the curse of dimensionality.
 \end{Problem}
 
 \begin{Problem} [Before the previous problem, easier]
@@ -378,9 +379,10 @@ This can be obtained via \eqref{eq:repformula}.  Since we assume that $\varrho$ 
     & \qquad \qquad   + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} k(z,y) k(w,y) \, \ip{ \KY(z,\cdot)}{\KY(w,\cdot)} \,  \dif z\dif w \\
    & = \KY(y,y)
       - 2 \int_{-\infty}^{\infty} k(z,y) \, \KY(y,z) \, \dif z
-     + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} k(z,y) k(w,y) \, \KY(z,w)\KY(w,\cdot) \,  \dif z\dif w.
+     + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} k(z,y) k(w,y) \, \KY(z,w) \,  \dif z\dif w.
 \end{align*}
 %Luke Bielawski - I believe there is a typo in the last double integral. The last $\KY(w, \cdot)$$ shouldn't be there as $\ip{ \KY(z,\cdot)}{\KY(w,\cdot)}$ should just be $\KY(z, w)$ with no extra term.
+%I have made this change
 This completes the derivation of \eqref{eq:kquality}.
 
 \section{Mean Squared Error Under IID Sampling} \label{app:MSE}
