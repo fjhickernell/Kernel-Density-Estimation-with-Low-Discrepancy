@@ -60,12 +60,12 @@ Define the random variable $Y = f(\vX)$, where $\vX \sim \cu[0,1]^d$, and $f:[0,
 See \cite{DicEtal14a} for a tutorial on methods of low discrepancy sequences.
 %If $Y$ is a discrete or mixed random variable, can low discrepancy sequences also be used to estimate the locations and magnitudes of the jump discontinuities in $F$ as well as $F'$, where this derivative exists?
 
-Suppose that  the random variable $Y$ is continuous, and has cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the \emph{design}, i.e., the $n \times d$ matrix formed from the data sites, $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  in terms of a Riemann-Stieltjes integral, or equivalently, a sum:
+Suppose that  $Y$ is a continuous random variable $Y$ with cumulative distribution function $F$ and probability density function $\varrho$.  Let $F_{\vy}$ be the empirical cumulative distribution function of a vector of sampled $Y$ values, $\vy := (y_1, \ldots, y_n) = (f(\vx_1), \ldots, f(\vx_n))$.  These values may be independent and identically distributed (IID) or sampled in some other way, such as via LD sampling.  Moreover, let $\mX$ denote the \emph{design}, i.e., the $n \times d$ matrix formed from the data sites, $\mX:=(\vx_1, \ldots, \vx_n)^T$, and let, let $F_\mX$ denote the empirical distribution of  these data sites.  Then a \emph{kernel density estimator (KDE)}, denoted $\hvarrho(\cdot,F_{\vy},k)$, may be defined  in terms of a Riemann-Stieltjes integral, or equivalently, a sum:
 \begin{equation} \label{eq:kdedef}
 	\hvarrho(y,F_{\vy},k) := \int_{-\infty}^{\infty} k(z,y) \, \dif F_{\vy}(z)  = \frac 1n \sum_{i=1}^n k(y_i,y) \\
 	= \frac 1n \sum_{i=1}^n k(f(\vx_i),y) = \int_{[0,1]^d} k(f(\vx),y) \, \dif F_\mX(\vx),
 \end{equation}
-where $k:\reals \times \reals \to \reals$ is called a \emph{smoothing kernel}.  Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$, so $k(z,y)$ should typically be larger for $z$ near $y$ than for $z$ away from $y$.   Moreover, we assume that
+where $k:\reals \times \reals \to \reals$ is called a \emph{smoothing kernel}.  Here, $k(\cdot,y)$ is a weight function used to estimate the density at $y$.  Thus, we expect $k(z,y)$ to be typically larger for $z$ near $y$ than for $z$ away from $y$.   Moreover, we assume that
 \begin{equation}
 	\label{eq:kintegral}
 	\int_{-\infty}^{\infty} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
@@ -80,7 +80,8 @@ If the design, $\mX$, is chosen to be IID, in which case, $\vy$ is a vector of I
 	= \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx
 	= \int_{[0,1]^d} k(f(\vx),y) \,  \dif F_{\mathrm{unif}}(\vx),
 \end{multline}
-Of course, for designs $\mX$ chosen to be LD, this is not the case, although one expects $\hvarrho(y,F_{\vy},k)$ to tend to $\hvarrho(y,F,k)$ as $n \to \infty$.
+where $F_{\mathrm{unif}}$ denotes the uniform distribution function over the unit cube.
+For designs $\mX$ chosen to be LD one expects $\hvarrho(y,F_{\vy},k)$ to tend to $\hvarrho(y,F,k)$ as $n \to \infty$.
 
 The error in approximating the density at a point by the KDE, $\abs{\varrho(y) - \hvarrho(y,F_{\vy},k)}$, can be bounded in terms of a sum of two terms involving the smoothed density:
 \begin{align}
@@ -242,10 +243,10 @@ For $l = 0$, this is just requiring that $\tk$ is normalized to 1. For odd $l$, 
 Rearranging gives
 \begin{align*}
     \sum_{l=0}^r h^{2l}\frac{1}{(2l)!}\tKY^{(2l)}(0) \sum_{i=0}^{2l}\binom{2l}{i}(-1)^i \int_{-\infty}^\infty  \tk(v) v^i \dif v\int_{-\infty}^\infty \tk(w) w^{2l-i} \dif w \\
-    + h^{2r+3} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v} 
+    + h^{2r+3} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v}
  \tKY^{(2r+2)}(q)q^{2r+2} \dif q \, \dif w \, \dif v
 \end{align*}
-For the first expression, for $i = 1, ..., 2r$, the $v$-integral vanishes. For $i = 0, ..., 2r-1$, the $w$-integral vanishes, unless $2l = 0$. Thus, only $i = l = 0$ term survives, which gives $\tKY(0)$. For the second expression, notice that everything to the right of $h^{2r+3}$ is a constant with respect to $h$. One can concoct a more precise constant; however, I don't think its vital. Thus, let the entire expression 
+For the first expression, for $i = 1, ..., 2r$, the $v$-integral vanishes. For $i = 0, ..., 2r-1$, the $w$-integral vanishes, unless $2l = 0$. Thus, only $i = l = 0$ term survives, which gives $\tKY(0)$. For the second expression, notice that everything to the right of $h^{2r+3}$ is a constant with respect to $h$. One can concoct a more precise constant; however, I don't think its vital. Thus, let the entire expression
 \[
 C = \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \int_0^{w-v}
  \tKY^{(2r+2)}(q)q^{2r+2} \dif q \, \dif w \, \dif v < \infty
@@ -274,8 +275,8 @@ where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite[Eq.\ (31)]{Hic99b}.  T
     \[
     \norm[\KX]{k\bigl(f(\cdot),y\bigr)} = \norm[\KX]{\tk\bigl((y - f(\cdot))/h\bigr)/h}
     \]
-    grows as $h$ decreases.  How does this depend on the coordinate weights?  
-    
+    grows as $h$ decreases.  How does this depend on the coordinate weights?
+
     We may try following the argument in \cite[Proposition 4.1]{AbdEtal21a}, where no coordinate weights are used.  The coordinate weights may help overcome the curse of dimensionality.
 \end{Problem}
 
