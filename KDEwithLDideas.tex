@@ -24,6 +24,7 @@
 \newcommand{\KY}{K_y}
 \newcommand{\tKY}{\widetilde{K}_y}
 \newcommand{\KX}{{K_{\vx}}}
+\newcommand{\KXu}{K_{\vx,\fu}}
 \newcommand{\hKX}{{\widehat{K}_{\vx}}}
 \newcommand{\tk}{\tilde{k}}
 \newcommand{\fv}{\mathfrak{v}}
@@ -269,62 +270,7 @@ where $\{\gamma_j\}_{j=1}^d$ are coordinate weights \cite[Eq.\ (31)]{Hic99b}.  T
     \int_{[0,1]^{\Bar{\fu}}} \abs{ \left . \frac{\partial^{\abs{\fu}}g}{\partial \vx_{\fu}} \right \rvert_{\vx_{\fu} = (1/2, \ldots, 1/2)}}^2 \, \dif \vx_{\bar{\fu}}, \qquad \bar{\fu} := \{1, \ldots, d\} \setminus \fu
 \end{align*}
 
-Let's back up.  Any function $g:[0,1]^d \to \reals$ can be decomposed into pieces only depending on coordinates indexed by the elements of the set $\fu \subseteq \{1, \ldots, d\}$.  This decomposition is defined recursively:
-\begin{align*}
-    g_\emptyset &= g(1/2, \ldots, 1/2), \\
-    g_{\fu}(\vx_\fu) &= g(\vx) \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv).
-\end{align*}
-
-For example, if $g(\vx) = x_1 -2 \cos(x_2 x_3)$, then
-\begin{align*}
-    g_\emptyset &= g(1/2, \ldots, 1/2) = 1/2 - 2 \cos(1/4), \\
-    g_{\{1\}}(x_1) &= g(x_1,1/2,1/2) - g_{\emptyset} = x_1 - 2 \cos(1/4) - ( 1/2 - 2 \cos(1/4)) = x_1 - 1/2,\\
-    g_{\{2\}}(x_2) &= g(1/2,x_2,1/2) - g_\emptyset = 1/2 - 2 \cos(x_2/2) - (1/2 - 2 \cos(1/4)) \\
-    & = -2 \cos(x_2/2) + 2\cos(1/4),\\
-     g_{\{3\}}(x_3) &= g(1/2,1/2, x_3) - g_\emptyset = 1/2 - 2 \cos(x_3/2) - (1/2 - 2 \cos(1/4)) \\
-     &= -2  \cos(x_3/2) + 2\cos(1/4),\\
-    g_{\{1,2\}}(x_1,x_2) &= g(x_1,x_2,1/2) - g_\emptyset -g_{\{1\}}(x_1) -g_{\{2\}}(x_2), \\
-    & = x_1 - 2 \cos(x_2/2) - (1/2 - 2 \cos(1/4)) - (x_1 - 1/2) - (-2\cos(x_2/2) +2 \cos(1/4)),\\
-    & = 0,\\
-    g_{\{1,3\}}(x_1,x_3) &= g(x_1,1/2,x_3) - g_\emptyset -g_{\{1\}}(x_1) -g_{\{3\}}(x_3), \\
-    & = x_1 - 2 \cos(x_3/2) - (1/2 - 2 \cos(1/4)) - (x_1 - 1/2) - (-2\cos(x_3/2) +2 \cos(1/4)),\\
-    & = 0, \\
-    g_{\{2,3\}}(x_2,x_3) &= g(1/2,x_2,x_3) - g_\emptyset -g_{\{2\}}(x_2) -g_{\{3\}}(x_3), \\
-    & = 1/2- 2 \cos(x_2x_3) - (1/2 - 2 \cos(1/4)) \\
-    & \qquad \qquad - (-2\cos(x_2/2) +2 \cos(1/4)) - (-2\cos(x_3/2) +2 \cos(1/4)),\\
-    & = -2\cos(x_2x_3) + 2 \cos(x_2/2) + 2 \cos(x_3/2) -2\cos(1/4), \\
-    g_{\{1,2,3\}}(x_1,x_2,x_3) &= g(x_1,x_2,x_3) - 
-    g_\emptyset - g_{\{1\}}(x-1) - g_{\{2\}}(x_2) -g_{\{3\}}(x_3) \\
-    & \qquad \qquad - g_{\{1,2\}}(x_1,x_2) - g_{\{1,3\}}(x_1,x_3) - g_{\{2,3\}}(x_2,x_3) \\
-    & = x_1 -2 \cos(x_2 x_3) - (1/2 - 2 \cos(1/4)) - (x_1 - 1/2) - (-2\cos(x_2/2) +2 \cos(1/4)) \\
-    & \qquad \qquad - (-2\cos(x_3/2) +2 \cos(1/4)) - 0 - 0 \\
-    & \qquad \qquad - ( -2\cos(x_2x_3) + 2 \cos(x_2/2) + 2 \cos(x_3/2) -2\cos(1/4)) \\
-    & = 0.
-\end{align*}
-From this decomposition we can conclude that $g$ has a constant term, pieces that depend $x_1$, $x_2$, and $x_3$ separately, and a piece that depends on $x_2$ and $x_3$ together.
-
-Now what does this decomposition look like when $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h$?
-\begin{align*}
-    g_\emptyset &= g(1/2, \ldots, 1/2) = \tk\bigl((y-f(1/2, \ldots, 1/2))/h\bigr)/h, \\
-    g_{\fu}(\vx_\fu) &= g(\vx) \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv) \\
-    & = \tk\bigl((y-f(\vx))/h\bigr)/h \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv).
-\end{align*}
-
-Moreover, decompose the reproducing kernel as follows:
-\begin{align*}
-    K_{\vx,\fu} (\vt_\fu,\vx_\fu) &:= \frac{1}{2^{\abs{\fu}}}\prod_{j \in \fu} [\abs{t_j -1/2} + \abs{x_j-1/2} - \abs{t_j  - x_j}] \\
-    \KX(\vx,\vt) & = \sum_{\fu \subseteq \{1, \ldots, d\}} \gamma_\fu^2   K_{\vx,\fu} (\vt_\fu,\vx_\fu).
-\end{align*}
-Then, recalling $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h$, it follows that
-\begin{align*}
-	%\label{eq:secondbddecomp}
-\abs{\int_{[0,1]^d} k(f(\vx),y) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2
-& = \abs{\int_{[0,1]^d} \sum_{\fu \subseteq \{1, \ldots, d} g_{\fu}(\vx_\fu) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2\\
-& = \abs{\sum_{\fu \subseteq \{1, \ldots, d} \int_{[0,1]^\fu} g_{\fu}(\vx_\fu) \,  \dif (F_{\mathrm{unif},\fu} - F_{\mX_\fu})(\vx)}^2\\
-& = \abs{\sum_{\fu \subseteq \{1, \ldots, d} \ip[K_{\vx,\fu}]{\int_{[0,1]^{\fu}} K_{\vx,\fu}(\cdot,\vx_\fu) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}{g_u}}^2 \\
-\nonumber
-& \le  \sum_{\fu \subseteq \{1, \ldots, d\}} \norm[K_{\vx,\fu}]{\int_{[0,1]^\fu} K_{\vx,\fu}(\cdot,\vx) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2\, \norm[K_{\vx,\vu}]{g_\fu } ,
-\end{align*}
+See \cref{sec:decomp} for some thoughts that might help.
 
 
 \begin{Problem} [Harder]
@@ -461,6 +407,89 @@ Thus, the mean squared error is
 \frac 1n  \left\{\int_{[0,1]^d} [g(\vx)]^2  \, \dif \vx -
     \left[\int_{[0,1]^d} g(\vx) \, \dif \vx\right]^2 \right\}.
 \]
+
+\section{Decompositions of Functions and Their Hilbert Spaces} \label{sec:decomp}
+In cubature error analysis it often is helpful to decompose the Hilbert space and the functions in them into pieces that only depend on a subset of the coordianates, indexed by $\fu \subseteq \{1, \ldots, d\}$.  For example, any function $g:[0,1]^d \to \reals$ can be decomposed as follows recursively:
+\begin{align*}
+	&& g(\vx) & = \sum_{\fu \subseteq \{1, \ldots, d\}} g_\fu(\vx_\fu), \\
+	&\text{where}& g_\emptyset &= g(1/2, \ldots, 1/2), \\
+	&&g_{\fu}(\vx_\fu) &= g(\vx) \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv).
+\end{align*}
+
+For example, if $g(\vx) = x_1 -2 \cos(x_2 x_3)$, then
+\begin{align*}
+	g_\emptyset &= g(1/2, \ldots, 1/2) = 1/2 - 2 \cos(1/4), \\
+	g_{\{1\}}(x_1) &= g(x_1,1/2,1/2) - g_{\emptyset} = x_1 - 2 \cos(1/4) - ( 1/2 - 2 \cos(1/4)) = x_1 - 1/2,\\
+	g_{\{2\}}(x_2) &= g(1/2,x_2,1/2) - g_\emptyset = 1/2 - 2 \cos(x_2/2) - (1/2 - 2 \cos(1/4)) \\
+	& = -2 \cos(x_2/2) + 2\cos(1/4),\\
+	g_{\{3\}}(x_3) &= g(1/2,1/2, x_3) - g_\emptyset = 1/2 - 2 \cos(x_3/2) - (1/2 - 2 \cos(1/4)) \\
+	&= -2  \cos(x_3/2) + 2\cos(1/4),\\
+	g_{\{1,2\}}(x_1,x_2) &= g(x_1,x_2,1/2) - g_\emptyset -g_{\{1\}}(x_1) -g_{\{2\}}(x_2), \\
+	& = x_1 - 2 \cos(x_2/2) - (1/2 - 2 \cos(1/4)) - (x_1 - 1/2) - (-2\cos(x_2/2) +2 \cos(1/4)),\\
+	& = 0,\\
+	g_{\{1,3\}}(x_1,x_3) &= g(x_1,1/2,x_3) - g_\emptyset -g_{\{1\}}(x_1) -g_{\{3\}}(x_3), \\
+	& = x_1 - 2 \cos(x_3/2) - (1/2 - 2 \cos(1/4)) - (x_1 - 1/2) - (-2\cos(x_3/2) +2 \cos(1/4)),\\
+	& = 0, \\
+	g_{\{2,3\}}(x_2,x_3) &= g(1/2,x_2,x_3) - g_\emptyset -g_{\{2\}}(x_2) -g_{\{3\}}(x_3), \\
+	& = 1/2- 2 \cos(x_2x_3) - (1/2 - 2 \cos(1/4)) \\
+	& \qquad \qquad - (-2\cos(x_2/2) +2 \cos(1/4)) - (-2\cos(x_3/2) +2 \cos(1/4)),\\
+	& = -2\cos(x_2x_3) + 2 \cos(x_2/2) + 2 \cos(x_3/2) -2\cos(1/4), \\
+	g_{\{1,2,3\}}(x_1,x_2,x_3) &= g(x_1,x_2,x_3) -
+	g_\emptyset - g_{\{1\}}(x-1) - g_{\{2\}}(x_2) -g_{\{3\}}(x_3) \\
+	& \qquad \qquad - g_{\{1,2\}}(x_1,x_2) - g_{\{1,3\}}(x_1,x_3) - g_{\{2,3\}}(x_2,x_3) \\
+	& = x_1 -2 \cos(x_2 x_3) - (1/2 - 2 \cos(1/4)) - (x_1 - 1/2) - (-2\cos(x_2/2) +2 \cos(1/4)) \\
+	& \qquad \qquad - (-2\cos(x_3/2) +2 \cos(1/4)) - 0 - 0 \\
+	& \qquad \qquad - ( -2\cos(x_2x_3) + 2 \cos(x_2/2) + 2 \cos(x_3/2) -2\cos(1/4)) \\
+	& = 0.
+\end{align*}
+From this decomposition we can conclude that $g$ has a constant term, pieces that depend $x_1$, $x_2$, and $x_3$ separately, and a piece that depends on $x_2$ and $x_3$ together.
+
+A property of this decomposition is that  $g_\fu(\vx_u) \bigr \vert_{x_\ell = 1/2} = 0$ for all $\ell \in \fu$.
+
+Now, decompose the reproducing kernel as follows:
+\begin{align*}
+	K_{\vx,\fu} (\vt_\fu,\vx_\fu) &:= \frac{1}{2^{\abs{\fu}}}\prod_{\ell \in \fu} [\abs{t_\ell -1/2} + \abs{x_\ell-1/2} - \abs{t_\ell  - x_\ell}] \\
+	\KX(\vx,\vt) & = \sum_{\fu \subseteq \{1, \ldots, d\}} \gamma_\fu^2   K_{\vx,\fu} (\vt_\fu,\vx_\fu).
+\end{align*}
+The reproducing kernel $K_{\vx,\fu}$ corresponds to a Hilbert space of functions defined on $[0,1]^{\fu}$ that vanish if any $x_\ell = 1/2$ for $\ell \in \fu$.  Moreover,
+\begin{equation*}
+	\norm[\KXu]{g_\fu}^2 = \int_{[0,1]^{\fu}} \abs{\frac{\partial^{\abs{\fu}} g_{u}}{\partial \vx_u}}^2 \, \dif \vx_\fu =  \int_{[0,1]^{\fu}} \abs{\left . \frac{\partial^{\abs{\fu}} g}{\partial \vx_u} \right \rvert_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)}}^2 \, \dif \vx_\fu.
+\end{equation*}
+
+Then, it follows that the cubature error of $g$ in the Hilbert space with reproducing kernel $\KX$ can be bounded as
+\begin{align*}
+	%\label{eq:secondbddecomp}
+	\abs{\int_{[0,1]^d} g(\vx) \,  \dif (F_{\mathrm{unif},\fu} - F_{\mX_\fu})(\vx)}^2
+	& = \abs{\int_{[0,1]^d} \sum_{\fu \subseteq \{1, \ldots, d} g_{\fu}(\vx_\fu) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2\\
+	& = \abs{\sum_{\fu \subseteq \{1, \ldots, d} \int_{[0,1]^\fu} g_{\fu}(\vx_\fu) \,  \dif (F_{\mathrm{unif},\fu} - F_{\mX_\fu})(\vx)}^2\\
+	& = \abs{\sum_{\fu \subseteq \{1, \ldots, d} \ip[K_{\vx,\fu}]{\int_{[0,1]^{\fu}} K_{\vx,\fu}(\cdot,\vx_\fu) \,  \dif (F_{\mathrm{unif},\fu} - F_{\mX_\fu})(\vx)}{g_u}}^2 \\
+	\nonumber
+	& \le  \sum_{\emptyset \ne \fu \subseteq \{1, \ldots, d\}} \norm[\KXu]{\int_{[0,1]^\fu} K_{\vx,\fu}(\cdot,\vx_\fu) \,  \dif (F_{\mathrm{unif},\fu} - F_{\mX_\fu})(\vx)}^2\, \norm[K_{\vx,\vu}]{g_\fu }^2,
+\end{align*}
+where $F_{\mathrm{unif},\fu$ is the uniform distribution over $[0,1]^\fu$, and $\mX_\fu$ is the submatrix of $\mX$ composed of the columns indexed by $\fu$.
+Here, (see \cite{Hic99b})
+\begin{align*}
+	\MoveEqLeft{\norm[\KXu]{\int_{[0,1]^\fu} K_{\vx,\fu}(\cdot,\vx_\fu) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2} \\
+	 & =
+	\int_{[0,1]^{\fu} \times [0,1]^{\fu}}  K_{\vx,\fu}(\vt_\fu,\vx_\fu) \,  \dif \vt_\fu \dif \vx_\fu
+	- \frac 2n \sum_{i=1}^n \int_{[0,1]^{\fu}} K_{\vx,\fu}(\vt_\fu,\vx_{i,\fu}) \,  \dif \vt_\fu
+	+ \frac 1 {n^2} \sum_{i,j=1}^n K_{\vx,\fu}(\vt_{i,\fu},\vx_{j,\fu}) \\
+	& = \frac{1}{12^{\abs{\fu}}} - \frac {2}{2^{\abs{\fu}}} \sum_{i=1}^n \prod_{\ell \in \fu} \left(\abs{x_{i\ell} - 1/2} - \abs{x_{i\ell} - 1/2}^2 \right) \\
+	& \qquad \qquad + \frac 1 {2^{\abs{\fu}}n^2} \sum_{i,j=1}^n
+	\prod_{\ell \in \fu} [\abs{x_{i,\ell} -1/2} + \abs{x_{j,\ell}-1/2} - \abs{x_{j,\ell}  - x_{j,\ell}}]
+\end{align*}
+
+
+Now what does $\norm[\KXu]{g_\fu}^2$ look like when $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h$?
+\begin{align*}
+	g_\emptyset &= g(1/2, \ldots, 1/2) = \tk\bigl((y-f(1/2, \ldots, 1/2))/h\bigr)/h, \\
+	g_{\fu}(\vx_\fu) &= g(\vx) \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv) \\
+	& = \tk\bigl((y-f(\vx))/h\bigr)/h \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv).
+\end{align*}
+
+
+
+
 
 \end{document}
 
