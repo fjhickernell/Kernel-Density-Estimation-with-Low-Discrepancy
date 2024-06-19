@@ -306,7 +306,24 @@ From this decomposition we can conclude that $g$ has a constant term, pieces tha
 Now what does this decomposition look like when $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h$?
 \begin{align*}
     g_\emptyset &= g(1/2, \ldots, 1/2) = \tk\bigl((y-f(1/2, \ldots, 1/2))/h\bigr)/h, \\
-    g_{\fu}(\vx_\fu) &= g(\vx) \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv).
+    g_{\fu}(\vx_\fu) &= g(\vx) \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv) \\
+    & = \tk\bigl((y-f(\vx))/h\bigr)/h \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv).
+\end{align*}
+
+Moreover, decompose the reproducing kernel as follows:
+\begin{align*}
+    K_{\vx,\fu} (\vt_\fu,\vx_\fu) &:= \frac{1}{2^{\abs{\fu}}}\prod_{j \in \fu} [\abs{t_j -1/2} + \abs{x_j-1/2} - \abs{t_j  - x_j}] \\
+    \KX(\vx,\vt) & = \sum_{\fu \subseteq \{1, \ldots, d\}} \gamma_\fu^2   K_{\vx,\fu} (\vt_\fu,\vx_\fu).
+\end{align*}
+Then, recalling $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h$, it follows that
+\begin{align*}
+	%\label{eq:secondbddecomp}
+\abs{\int_{[0,1]^d} k(f(\vx),y) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2
+& = \abs{\int_{[0,1]^d} \sum_{\fu \subseteq \{1, \ldots, d} g_{\fu}(\vx_\fu) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2\\
+& = \abs{\sum_{\fu \subseteq \{1, \ldots, d} \int_{[0,1]^\fu} g_{\fu}(\vx_\fu) \,  \dif (F_{\mathrm{unif},\fu} - F_{\mX_\fu})(\vx)}^2\\
+& = \abs{\sum_{\fu \subseteq \{1, \ldots, d} \ip[K_{\vx,\fu}]{\int_{[0,1]^{\fu}} K_{\vx,\fu}(\cdot,\vx_\fu) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}{g_u}}^2 \\
+\nonumber
+& \le  \sum_{\fu \subseteq \{1, \ldots, d\}} \norm[K_{\vx,\fu}]{\int_{[0,1]^\fu} K_{\vx,\fu}(\cdot,\vx) \,  \dif (F_{\mathrm{unif}} - F_{\mX})(\vx)}^2\, \norm[K_{\vx,\vu}]{g_\fu } ,
 \end{align*}
 
 
