@@ -453,7 +453,7 @@ Now, decompose the reproducing kernel as follows:
 \end{align*}
 The reproducing kernel $K_{\vx,\fu}$ corresponds to a Hilbert space of functions defined on $[0,1]^{\fu}$ that vanish if any $x_\ell = 1/2$ for $\ell \in \fu$.  Moreover,
 \begin{equation*}
-	\norm[\KXu]{g_\fu}^2 = \int_{[0,1]^{\fu}} \abs{\frac{\partial^{\abs{\fu}} g_{u}}{\partial \vx_u}}^2 \, \dif \vx_\fu =  \int_{[0,1]^{\fu}} \abs{\left . \frac{\partial^{\abs{\fu}} g}{\partial \vx_u} \right \rvert_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)}}^2 \, \dif \vx_\fu.
+	\norm[\KXu]{g_\fu}^2 = \int_{[0,1]^{\fu}} \abs{\frac{\partial^{\abs{\fu}} g_{u}}{\partial \vx_u}}^2 \, \dif \vx_\fu =  \int_{[0,1]^{\fu}} \abs{\left . \frac{\partial^{\abs{\fu}} g_\fu}{\partial \vx_u} \right \rvert_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)}}^2 \, \dif \vx_\fu.
 \end{equation*}
 
 Then, it follows that the cubature error of $g$ in the Hilbert space with reproducing kernel $\KX$ can be bounded as
@@ -480,11 +480,23 @@ Here, (see \cite{Hic99b})
 \end{align*}
 
 
-Now what does $\norm[\KXu]{g_\fu}^2$ look like when $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h$?
+Now what does $\norm[\KXu]{g_\fu}^2$ look like when $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h = \tk\bigl((f(\vx) - y)/h\bigr)/h$?
 \begin{align*}
-	g_\emptyset &= g(1/2, \ldots, 1/2) = \tk\bigl((y-f(1/2, \ldots, 1/2))/h\bigr)/h, \\
-	g_{\fu}(\vx_\fu) &= g(\vx) \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv) \\
-	& = \tk\bigl((y-f(\vx))/h\bigr)/h \Bigr |_{\vx_{\overline{\fu}} = (1/2, \ldots, 1/2)} - \sum_{\fv \subset \fu} g_{\fv}(\vx_\fv).
+	\frac{\partial g}{\partial x_\ell} &= \frac 1{h} \left[ \frac 1h \tk^{(1)}\left(\frac{f(\vx) - y}{h} \right) \frac{\partial f}{\partial x_\ell} \right] \\
+	\frac{\partial^2 g}{\partial x_{\ell_1} \partial x_{\ell_2}}
+	&= \frac 1{h} \left[\frac 1{h^2} \tk^{(2)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial f}{\partial x_{\ell_1}}  \frac{\partial f}{\partial x_{\ell_2}} + \frac 1h \tk^{(1)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial^2 f}{\partial x_{\ell_1}\partial x_{\ell_2}} \right] \\
+	\frac{\partial^3 g}{\partial x_{\ell_1} \partial x_{\ell_2} \partial x_{\ell_3}}
+&= \frac 1{h} \left[\frac 1{h^3} \tk^{(3)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial f}{\partial x_{\ell_1}}  \frac{\partial f}{\partial x_{\ell_2}} \frac{\partial f}{\partial x_{\ell_3}} \\
+& \qquad + \frac 1{h^2} \tk^{(2)}\left(\frac{f(\vx) - y}{h} \right)
+\left \{ \frac{\partial^2 f}{\partial x_{\ell_1}\partial x_{\ell_2}} \frac{\partial f}{\partial x_{\ell_3}}
++ \frac{\partial^2 f}{\partial x_{\ell_1}\partial x_{\ell_3}} \frac{\partial f}{\partial x_{\ell_2}}
++ \frac{\partial^2 f}{\partial x_{\ell_2}\partial x_{\ell_3}} \frac{\partial f}{\partial x_{\ell_1}}
+\right\} \\
+& \qquad + \frac 1{h} \tk^{(2)}\left(\frac{f(\vx) - y}{h} \right)
+\frac{\partial^3 f}{\partial x_{\ell_1} \partial x_{\ell_2} \partial x_{\ell_3}}
+ \right ] \\
+	\frac {\partial g}{\partial \vx_\fu} &=
+	\frac 1h \sum_{m=1}^{\abs{\fu}} \left \{ \frac 1 {h^m} \tk^{(\abs{\fu}-m+1)}\left(\frac{f(\vx) - y}{h} \right) \sum_{} ???? \right\}
 \end{align*}
 
 
