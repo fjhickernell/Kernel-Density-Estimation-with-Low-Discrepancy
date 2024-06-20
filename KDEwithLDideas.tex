@@ -498,6 +498,15 @@ Now what does $\norm[\KXu]{g_\fu}^2$ look like when $g(\vx) = \tk\bigl((y-f(\vx)
 	\frac {\partial g}{\partial \vx_\fu} &=
 	\frac 1h \sum_{m=1}^{\abs{\fu}} \left \{ \frac 1 {h^m} \tk^{(\abs{\fu}-m+1)}\left(\frac{f(\vx) - y}{h} \right) \sum_{} ???? \right\}
 \end{align*}
+%Luke Bielawski (8:25pm 6/19): I think this expression can be taken from https://arxiv.org/pdf/math/0601149 to be roughyl something like: sum over all of the partitions of \mathfrak{u} and then take the product over the elements of that partition. I am thinking how to keep it in the current notation without thinking about partitions
+Luke Bielawski: This may be what is sought after?
+\[
+ \frac{\partial^{|\mathfrak{v}|}}{\partial u_\mathfrak{v}} \tilde{g}(x, u_\mathfrak{v}, 1/2) = \frac{\partial^{|\mathfrak{v}|}}{\partial u_\mathfrak{v}} \frac{1}{h} \sum_{P \in \Pi(\mathfrak{v})} \frac{1}{h^{|P|+1}} k^{|P|}\left(\frac{x - g(u_\mathfrak{v}, 1/2)}{h}\right) \prod_{w \in P} (g_w(u_\mathfrak{v}, 1/2))
+\]
+where $\mathfrak{v}\subset \{1, ..., s\}$, $\Pi(\mathfrak{v})$ is the set of partitions of $\mathfrak{v}$, $g(u_\mathfrak{v}, 1/2) = g(u)|_{\overline{u_\mathfrak{v}} = (1/2, ..., 1/2)}$ and
+\[
+\tilde{g}(x, u_\mathfrak{v}, 1/2) = \frac{1}{h}k\left( \frac{x - g(u_\mathfrak{v}, 1/2)}{h}\right)
+\]
 
 
 
