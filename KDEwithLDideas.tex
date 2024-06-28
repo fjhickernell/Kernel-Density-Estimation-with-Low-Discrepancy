@@ -483,9 +483,9 @@ Here, (see \cite{Hic99b})
 
 Now what does $\norm[\KXu]{g_\fu}^2$ look like when $g(\vx) = \tk\bigl((y-f(\vx))/h\bigr)/h = \tk\bigl((f(\vx) - y)/h\bigr)/h$?
 \begin{align*}
-	\frac{\partial g}{\partial x_\ell} &= \frac 1{h} \left[ \frac 1h \tk^{(1)}\left(\frac{f(\vx) - y}{h} \right) \frac{\partial f}{\partial x_\ell} \right] \\
+	\frac{\partial g}{\partial x_\ell} &= \frac 1{h} \left[ \frac 1h \tk^{(1)}\left(\frac{f(\vx) - y}{h} \right) \frac{\partial f}{\partial x_\ell} \right], \\
 	\frac{\partial^2 g}{\partial x_{\ell_1} \partial x_{\ell_2}}
-	&= \frac 1{h} \left[\frac 1{h^2} \tk^{(2)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial f}{\partial x_{\ell_1}}  \frac{\partial f}{\partial x_{\ell_2}} + \frac 1h \tk^{(1)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial^2 f}{\partial x_{\ell_1}\partial x_{\ell_2}} \right] \\
+	&= \frac 1{h} \left[\frac 1{h^2} \tk^{(2)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial f}{\partial x_{\ell_1}}  \frac{\partial f}{\partial x_{\ell_2}} + \frac 1h \tk^{(1)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial^2 f}{\partial x_{\ell_1}\partial x_{\ell_2}} \right], \\
 	\frac{\partial^3 g}{\partial x_{\ell_1} \partial x_{\ell_2} \partial x_{\ell_3}}
  &= \frac 1{h} \left[\frac 1{h^3} \tk^{(3)}\left(\frac{f(\vx) - y}{h} \right)  \frac{\partial f}{\partial x_{\ell_1}}  
  \frac{\partial f}{\partial x_{\ell_2}} \frac{\partial f}{\partial x_{\ell_3}} \right.\\
@@ -494,19 +494,15 @@ Now what does $\norm[\KXu]{g_\fu}^2$ look like when $g(\vx) = \tk\bigl((y-f(\vx)
  + \frac{\partial^2 f}{\partial x_{\ell_1}\partial x_{\ell_3}} \frac{\partial f}{\partial x_{\ell_2}}
  + \frac{\partial^2 f}{\partial x_{\ell_2}\partial x_{\ell_3}} \frac{\partial f}{\partial x_{\ell_1}}
  \right\} \\
- %%%%%%There were some formatting errors that I have not quite fixed
- %%%%%%%
- % & \qquad \left . + \frac 1{h} \tk^{(2)}\left(\frac{f(\vx) - y}%{h} \right)
- % \frac{\partial^3 f}{\partial x_{\ell_1} \partial x_{\ell_2} \partial x_{\ell_3}}
- %  \right ] \\
-% 	\frac {\partial g}{\partial \vx_\fu} &=
-% 	\frac 1h \sum_{m=1}^{\abs{\fu}} \left \{ \frac 1 {h^m} \tk^{(\abs{\fu}-m+1)}\left(\frac{f(\vx) - y}{h} \right) \sum ???? \right\}
+ & \qquad \left . + \frac 1{h} \tk^{(2)}\left(\frac{f(\vx) - y}{h} \right)
+ \frac{\partial^3 f}{\partial x_{\ell_1} \partial x_{\ell_2} \partial x_{\ell_3}}
+ \right ],
 \end{align*}
 
 %Luke Bielawski (8:25pm 6/19): I think this expression can be taken from https://arxiv.org/pdf/math/0601149 to be roughyl something like: sum over all of the partitions of \mathfrak{u} and then take the product over the elements of that partition. I am thinking how to keep it in the current notation without thinking about partitions
 Luke Bielawski: This may be what is sought after?
 \[
- \frac{\partial^{|\mathfrak{v}|}}{\partial u_\mathfrak{v}} \tilde{g}(x, u_\mathfrak{v}, 1/2) =  \sum_{P \in \Pi(\mathfrak{v})} \frac{1}{h^{|P|+1}} k^{|P|}\left(\frac{x - g(u_\mathfrak{v}, 1/2)}{h}\right) \prod_{w \in P} \frac{\partial^{|w|}}{\partial u_w}(g(u_\mathfrak{v}, 1/2))
+\frac{\partial^{|\mathfrak{v}|}}{\partial u_\mathfrak{v}} \tilde{g}(x, u_\mathfrak{v}, 1/2) =  \sum_{P \in \Pi(\mathfrak{v})} \frac{1}{h^{|P|+1}} k^{|P|}\left(\frac{x - g(u_\mathfrak{v}, 1/2)}{h}\right) \prod_{w \in P} \frac{\partial^{|w|}}{\partial u_w}(g(u_\mathfrak{v}, 1/2))
 \]
 where $\mathfrak{v}\subset \{1, ..., s\}$, $\Pi(\mathfrak{v})$ is the set of partitions of $\mathfrak{v}$, $g(u_\mathfrak{v}, 1/2) = g(u)|_{\overline{u_\mathfrak{v}} = (1/2, ..., 1/2)}$ and
 \[
@@ -516,7 +512,12 @@ where $\mathfrak{v}\subset \{1, ..., s\}$, $\Pi(\mathfrak{v})$ is the set of par
 \FJHNote{Nice, Luke.  This may be correct modulo synchronizing the notation with what we have.}
 
 
+\section{$P_2$}
 
+If $\sum_{j=1}^{\infty}\gamma^a_j < \infty$, then for any fixed $\delta > 0$ there exists a  $G_b \subset H^\infty_b$ such that for all $\textbf{h} \in H^\infty_b \setminus G_b$ : \\
+
+ \[  P_2(\textbf{h},\gamma, n, 1:s) \leq \tilde C_P(2,a,\gamma, \delta)n^{-2/a+\delta}, \ n = b, b^2, \ldots,\  s = 1,2, \ldots \ .
+\] \cite[Equation 12]{HicNie03a}
 
 \end{document}
 
