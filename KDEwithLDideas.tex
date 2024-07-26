@@ -28,6 +28,7 @@
 \newcommand{\hKX}{{\widehat{K}_{\vx}}}
 \newcommand{\tk}{\tilde{k}}
 \newcommand{\fv}{\mathfrak{v}}
+\newcommand{\bbone}{\bbm{1}}
 \DeclareMathOperator{\ttk}{\widetilde{tail}}
 \DeclareMathOperator{\smooth}{smth}
 \DeclareMathOperator{\disc}{disc}
@@ -317,6 +318,36 @@ We already know that the discrepancy is $\Order(n^{-1+\delta})$ for all $\delta 
 \end{Problem}
 
 
+\subsection{Boundary Effects}
+Suppose that we know that $\Pr(Y \in \overline{(a,b)}) = 1$, where $a$ and/or $b$ are finite.  Then we should be able to improve our kernel density estimator.
+
+In \eqref{eq:smoothdens} it then makes more sense to define the smoothed density as
+\begin{equation}
+	\label{eq:smoothdens_bd}
+	\hvarrho(y,F,k)
+	= \int_{a}^{b} k(z,y) \, \varrho(z) \, \dif z \\
+	= \int_{[0,1]^d} k(f(\vx),y) \,  \dif \vx
+	= \int_{[0,1]^d} k(f(\vx),y) \,  \dif F_{\mathrm{unif}}(\vx).
+\end{equation}
+However, now we need to replace \eqref{eq:kintegral} by
+\begin{equation}
+	\label{eq:kintegral_bd}
+	\int_{a}^{b} k(z,y) \, \dif y = 1 \qquad \forall z \in \reals.
+\end{equation}
+Thus, if originally we chose $k(z,y) = h^{-1}\tk((y-z)/h)$ with $\displaystyle\int_{-\infty}^\infty \tk(y) \dif y = 1$, we now need to choose 
+\begin{equation*}
+    k(z,y) = c(z,a,b,h) \, h^{-1}\tk((y-z)/h) \, \bbone_{\overline{(a,b)}}(y)
+\end{equation*}
+where the normalizing factor $c(z,a,b,h)$ satisfies
+\begin{align*}
+    1 & = \int_{a}^{b} k(z,y) \, \dif y = c(z,a,b,h) \int_{a}^{b} \tk((y-z)/h) \, \frac{\dif y}{h} \\
+    & = c(z,a,b,h) \int_{(a-z)/h}^{(b-z)/h} \tk(w) \, \dif w,  \qquad w = (y-z)/h \\
+    c(z,a,b,h) & = \left[ \int_{(a-z)/h}^{(b-z)/h} \tk(w) \, \dif w\right]^{-1}
+\end{align*}
+In summary, we replace $k(z,y) = h^{-1}\tk((y-z)/h)$  by
+\[
+k(z,y)  = \frac{\tk((y-z)/h) \, \bbone_{\overline{(a,b)}}(y)}{h \displaystyle \int_{(a-z)/h}^{(b-z)/h} \tk(w) \, \dif w}
+\]
 
 \section{Hermite Function Density Kernels}
 
@@ -518,6 +549,17 @@ If $\sum_{j=1}^{\infty}\gamma^a_j < \infty$, then for any fixed $\delta > 0$ the
 
  \[  P_2(\textbf{h},\gamma, n, 1:s) \leq \tilde C_P(2,a,\gamma, \delta)n^{-2/a+\delta}, \ n = b, b^2, \ldots,\  s = 1,2, \ldots \ .
 \] \cite[Equation 12]{HicNie03a}
+
+
+\section{Conditional Monte Carlo for Density Estimation}
+An alternative to kernel density estimation is conditional Monte Carlo.  It is based on the observation that if
+\[
+Y = f(\vX_{1:d}) \iff X_1 = g(Y; X_{2:d})
+\]
+then 
+\[
+\varrho(y) = \Ex_{X_{2:d} [\varrho(Y |X_{2:d}] = \Ex_{X_{2:d} [\varrho(g'(y; X_{2:d}]
+\]
 
 \end{document}
 
