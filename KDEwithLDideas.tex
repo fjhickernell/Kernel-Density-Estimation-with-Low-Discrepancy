@@ -28,7 +28,6 @@
 \newcommand{\hKX}{{\widehat{K}_{\vx}}}
 \newcommand{\tk}{\tilde{k}}
 \newcommand{\fv}{\mathfrak{v}}
-\newcommand{\bbone}{\bbm{1}}
 \DeclareMathOperator{\ttk}{\widetilde{tail}}
 \DeclareMathOperator{\smooth}{smth}
 \DeclareMathOperator{\disc}{disc}
@@ -558,8 +557,14 @@ Y = f(\vX_{1:d}) \iff X_1 = g(Y; X_{2:d})
 \]
 then 
 \[
-\varrho(y) = \Ex_{X_{2:d} [\varrho(Y |X_{2:d}] = \Ex_{X_{2:d} [\varrho(g'(y; X_{2:d}]
+\varrho(y) = \Ex_{X_{2:d}} [\varrho(y |X_{2:d})] = \Ex_{\vX_{2:d}} [g'(y; \vX_{2:d})]
 \]
+
+For example
+\begin{align*}
+    Y &= \gamma_1\Phi^{-1}(X_1) + \cdots + \gamma_d\Phi^{-1}(X_d) & X_1 &= \Phi\bigl([Y - \gamma_2\Phi^{-1}(X_2) - \cdots - \gamma_d\Phi^{-1}(X_d)]/\gamma_1 \bigr) \\
+    && g'(y; \vX_{2:d}) & = \phi\bigl([y - \gamma_2\Phi^{-1}(X_2) - \cdots - \gamma_d\Phi^{-1}(X_d)]/\gamma_1 \bigr)/\gamma_1
+\end{align*}
 
 \end{document}
 
