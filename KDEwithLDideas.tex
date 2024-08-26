@@ -28,7 +28,6 @@
 \newcommand{\hKX}{{\widehat{K}_{\vx}}}
 \newcommand{\tk}{\tilde{k}}
 \newcommand{\fv}{\mathfrak{v}}
-\newcommand{\bbone}{\bbm{1}}
 \DeclareMathOperator{\ttk}{\widetilde{tail}}
 \DeclareMathOperator{\smooth}{smth}
 \DeclareMathOperator{\disc}{disc}
@@ -166,13 +165,18 @@ These choices will depend on the assumptions inherent in our choices of reproduc
 Returning to the error analysis of the kernel density estimator, we first consider the simpler case of stationary density kernels.  Suppose that $k(z,y) = h^{-1}\tk((z-y)/h)$ where $h$ is a bandwidth. We also assume for simplicity that $\tk$ is an even function.
 
 \subsection{Bounding the Smoothing} Moreover, assume that the reproducing kernel $\KY$ is also stationary, i.e., $\KY(y,z) = \tKY(y-z)$. This means that the density of the random variable $Y$ and the density of $Y$ plus any constant have the same norm in the Hilbert space defined by $\KY$.  By the definition of a reproducing kernel, $\tKY$ is also even. Then the quantity measuring the quality of the density kernel in \eqref{eq:kquality} may be written in terms of integrals involving the reproducing kernel and density kernel:
-\begin{align*}
+\begin{align}
+\label{eq:bias_error}
 	\smooth^2(k,\KY) & = \norm[\KY]{\KY(\cdot,y) - \int_{-\infty}^{\infty} k(z,y) \, \KY(z,\cdot) \, \dif z}^2 \\
+ \nonumber
 	&=  \tKY(0) -  \frac 2h \int_{-\infty}^{\infty} \tk((z-y)/h) \, \tKY(z-y) \, \dif z \\
+ \nonumber
 	& \qquad \qquad + \frac 1{h^2} \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  \tk((z-y)/h)  \, \tKY(z-t) \, \tk((t-y)/h) \, \dif z \, \dif t \\
+ \nonumber
 	&=   \tKY(0) - 2 \int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w \\
+ \nonumber
 	& \qquad \qquad + \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}  \tk(w) \, \tKY(h(w-v)) \, \tk(v)\, \dif w \, \dif v,
-\end{align*}
+\end{align}
 via the variable transformations $w = (z-y)/h$ and $v = (t-y)/h$. Note that the quality of the density kernel is independent of the position, $y$ for stationary kernels.
 
 To understand the dependence of this quantity on the bandwidth, $h$, let's approximate $\tKY$ by a MacLaurin series with $r+1$ terms plus an error term.  Since $\tKY$ is an even function, the odd numbered derivatives drop out.
@@ -558,8 +562,76 @@ Y = f(\vX_{1:d}) \iff X_1 = g(Y; X_{2:d})
 \]
 then 
 \[
-\varrho(y) = \Ex_{X_{2:d} [\varrho(Y |X_{2:d}] = \Ex_{X_{2:d} [\varrho(g'(y; X_{2:d}]
+\varrho(y) = \Ex_{X_{2:d}} [\varrho(y |X_{2:d})] = \Ex_{\vX_{2:d}} [g'(y; \vX_{2:d})]
 \]
+
+For example
+\begin{align*}
+    Y &= \gamma_1\Phi^{-1}(X_1) + \cdots + \gamma_d\Phi^{-1}(X_d) & X_1 &= \Phi\bigl([Y - \gamma_2\Phi^{-1}(X_2) - \cdots - \gamma_d\Phi^{-1}(X_d)]/\gamma_1 \bigr) \\
+    && g'(y; \vX_{2:d}) & = \phi\bigl([y - \gamma_2\Phi^{-1}(X_2) - \cdots - \gamma_d\Phi^{-1}(X_d)]/\gamma_1 \bigr)/\gamma_1
+\end{align*}
+
+\section{Evaluating the error of the bias term}
+To understand the dependence of \eqref{eq:bias_error} bandwidth, $h$, let's approximate $\tKY$ by a MacLaurin series with $r+2$ terms plus an error term.  Since $\tKY$ is an even function, the odd numbered derivatives drop out.
+\begin{equation*}
+	\tKY(y)  = \sum_{\ell = 0}^{r+1} \frac{\tKY^{(2\ell)}(0) \, y^{2\ell}}{2\ell!} + \frac{\tKY^{(2r+4)}(\eta) \,  y^{2r+4}}{(2r+4)!},
+\end{equation*}
+where $\eta$ is between $0$ and $y$.
+Here $\tKY^{(2\ell)}$ denotes the $2\ell^{\text{th}}$ derivative of $\tKY$.
+
+It follows from this series expression for $\tKY$ that
+\begin{align} \label{eq:isomidterm}
+	\int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w & =
+	\int_{-\infty}^{\infty} \tk(w) \, \sum_{\ell = 0}^{r+1} \frac{\tKY^{(2\ell)}(0) \, (hw)^{2\ell}}{2\ell!}  \, \dif w 
+	+ \int_{-\infty}^{\infty} \tk(w) \, \frac{\tKY^{(2r+4)}(\eta) \,  (hw)^{2r+4}}{(2r+4)!} \, \dif w \\
+ \nonumber & =
+	\sum_{\ell = 0}^{r+1} \frac{\tKY^{(2\ell)}(0) h^{2\ell}}{2\ell!}\int_{-\infty}^{\infty} \tk(w) \, w^{2\ell}   \, \dif w 
+	+ \frac{h^{2r+4}}{(2r+4)!} \int_{-\infty}^{\infty} \tk(w) \, \tKY^{(2r+4)}(\eta) \,  w^{2r+4} \, \dif w ,
+\end{align}
+since $\tk$ and $\tKY$ are even.  If $\tk$ has the property that
+\begin{equation} \label{eq:tkprop}
+	\int_{-\infty}^{\infty} \tk(w) w^{2\ell}  \, \dif w =  \delta_{0,\ell}, \qquad l=0,\dots,r,
+\end{equation}
+then 
+\begin{multline} \label{eq:isomidterm_b}
+	\int_{-\infty}^{\infty} \tk(w) \, \tKY(hw) \, \dif w  = \tKY(0) + 
+ \frac{\tKY^{(2r+2)}(0) h^{2r+2}}{(2r+2)!}\int_{-\infty}^{\infty} \tk(w) \, w^{2r+2}   \, \dif w  \\
+	+ \frac{h^{2r+4}}{(2r+4)!} \int_{-\infty}^{\infty} \tk(w) \, \tKY^{(2r+4)}(\eta) \,  w^{2r+4} \, \dif w.
+\end{multline}
+
+We next look at 
+
+\textbf{Attempted Solution (Luke Bielawski with modifications by Fred)}
+\begin{align*}
+\MoveEqLeft{\int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tKY(h(w-v)) \tk(v) \, \dif w \, \dif v} 
+ \\
+ \nonumber
+ & = \sum_{\ell = 0}^{r+1} \frac{\tKY^{(2\ell)}(0) h^{2\ell}}{2\ell!}
+ \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) (w-v)^{2\ell}  \, \dif w \, \dif v \\
+ \nonumber
+&\qquad \qquad  + 
+ \frac{h^{2r+4}}{(2r+4)!} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \, \tKY(\eta)(v-w)^{2r+4} \dif w \, \dif v
+\end{align*}
+Again under assumption  \eqref{eq:tkprop} all integrals of the form 
+$ \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) w^p v^q  \, \dif w \, \dif v$ with $p, q \in \{0, \ldots, 2r+1\}$ and $p >0$ or $q>0$ vanish.  This leaves us with 
+\begin{align}
+\MoveEqLeft{\int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tKY(h(w-v)) \tk(v) \, \dif w \, \dif v} 
+ \\
+ \nonumber
+ & = \tKY(0) + \frac{\tKY^{(2r+2)}(0) h^{2r+2}}{(2r+2)!}
+ \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) (w^{2r+2} + v^{2r+2})  \, \dif w \, \dif v \\
+ \nonumber
+&\qquad \qquad  + 
+ \frac{h^{2r+4}}{(2r+4)!} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \, \tKY(\eta)(v-w)^{2r+4} \dif w \, \dif v \\
+  \nonumber
+ & = \tKY(0) + \frac{2\tKY^{(2r+2)}(0) h^{2r+2}}{(2r+2)!}
+ \int_{-\infty}^\infty \tk(w) w^{2r+2}   \, \dif w  \\
+ \nonumber
+&\qquad \qquad  + 
+ \frac{h^{2r+4}}{(2r+4)!} \int_{-\infty}^\infty \int_{-\infty}^\infty \tk(w) \tk(v) \, \tKY(\eta)(v-w)^{2r+4} \dif w \, \dif v
+\end{align}
+
+Combining 
 
 \end{document}
 
